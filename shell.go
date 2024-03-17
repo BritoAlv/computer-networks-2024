@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"net"
+	"reflect"
+	"strings"
 )
 
 
 func MainShell(){
+	var X CommandsStruct 
 	fmt.Println("Calavera FTP Client")
-	var connConfig net.Conn
 	for {
 		fmt.Print("IP of the FTP server you wish connect to: ")
 		
@@ -25,26 +27,26 @@ func MainShell(){
 			fmt.Println("	" + err.Error())
 			continue
 		}
-		connConfig = conn
+		X.connection = &conn
 		fmt.Println("Established connection, Greetings should come from the server: ")
 		break
 	}
 	fmt.Println("SERVER SAYS: ")
-	response, _ := read(&connConfig)
+	response, _ := read(X.connection)
 	fmt.Println(string(response))
 	fmt.Println("As you can read I need User and Password")
 	fmt.Print("User: ")
 	user := read_input()
 	fmt.Print("Password: ")
 	password := read_input()
-	write(&connConfig, []byte("USER " + user + "\r\n"))
-	_, err :=  read(&connConfig)
+	write(X.connection, []byte("USER " + user + "\r\n"))
+	_, err :=  read(X.connection)
 	if err != nil {
 		fmt.Println("Something weird happent so I'm going to close everything")
 		return		
 	}
-	write(&connConfig, []byte("PASS " + password + "\r\n"))
-	_, err =  read(&connConfig)
+	write(X.connection, []byte("PASS " + password + "\r\n"))
+	_, err =  read(X.connection)
 	if err != nil {
 		fmt.Println("Something weird happent so I'm going to close everything")
 		return		
@@ -54,22 +56,25 @@ func MainShell(){
 	for {
 		fmt.Print(">> ")
 		command := read_input()
-		if(starts_with(command, "exit")){
-			fmt.Println("Goodbye! Calavera")
-			break
-		} else if (starts_with(command, "cd")){
-			command_CD(&connConfig, command)			
-		} else if (starts_with(command, "ls")){
-			command_LIST(&connConfig, command)
-		} else if (starts_with(command, "get")){
-			command_GET(&connConfig, command)
-		} else if(starts_with(command, "put")){
-			 command_STORE(&connConfig, command)
-		} else if(starts_with(command, "help")){
-			fmt.Println("cd", "ls", "get", "put", "help")
-		} else{
-			fmt.Println("Calavera pon algo que entienda... como help")
+		// use reflection to execute a command.
+		parts := strings.Split(command, " ")
+		if len(parts) == 0{
+				fmt.Println("Que haces Calavera")
+				continue
 		}
+		command_name := parts[0]
+
+		if(command_name == "exit"){
+			break
+		}
+
+		method := reflect.ValueOf(&X).MethodByName(strings.ToUpper(command_name))
+
+		if !method.IsValid() {
+			fmt.Println("Calavera pon algo que entienda... como help")
+			continue
+		}
+		method.Call([]reflect.Value{reflect.ValueOf(strings.TrimSpace(command[len(command_name):]))})
 	}
-	defer connConfig.Close()
+	defer (*(X.connection)).Close()
 }
