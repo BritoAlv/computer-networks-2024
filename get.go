@@ -10,7 +10,7 @@ import (
 func (cs *CommandsStruct) GET(command string){
 	// split command in args.
 	args := strings.Split(command, " ")
-	if len(args) < 2 || args[1] != "A" || args[1] != "B" {
+	if (len(args) < 2 || (args[1] != "A" && args[1] != "B")) {
 		fmt.Println("Provide Arguments: get filename binary/ascii")
 		fmt.Println("get file.go A")
 		fmt.Println("get file.mp4 B")

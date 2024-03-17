@@ -17,7 +17,21 @@ func starts_with(command, prefix string) bool{
 }
 
 func is_valid_ip(ip string) bool {
-	// I have to implement this.
+	// Function to check if a string is a valid IP
+	// This is a very simple check, it only checks if the string has 3 dots and 4 numbers
+	numbers := strings.Split(ip, ".")
+	if len(numbers) != 4 {
+		return false
+	}
+	for _, number := range numbers {
+		value, err := strconv.Atoi(number)
+		if err != nil {
+			return false
+		}
+		if value < 0 || value > 255 {
+			return false
+		}
+	}
 	return true
 }
 

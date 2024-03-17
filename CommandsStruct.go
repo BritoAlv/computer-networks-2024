@@ -6,3 +6,4 @@ type CommandsStruct struct {
 	connection *net.Conn
 }
 
+
