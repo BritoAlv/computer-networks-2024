@@ -14,6 +14,7 @@ func (cs *CommandsStruct) PUT (command string){
 		fmt.Println("Provide Arguments: get filename binary/ascii")
 		fmt.Println("put file.go A")
 		fmt.Println("put file.mp4 B")
+		return
 	}
 	if(args[1] == "A"){
 		command_store(cs, args[0], false)

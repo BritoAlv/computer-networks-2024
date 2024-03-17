@@ -14,6 +14,7 @@ func (cs *CommandsStruct) GET(command string){
 		fmt.Println("Provide Arguments: get filename binary/ascii")
 		fmt.Println("get file.go A")
 		fmt.Println("get file.mp4 B")
+		return
 	}
 	if(args[1] == "A"){
 		command_get(cs, args[0], false)
