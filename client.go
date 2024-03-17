@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func write(connConfig *net.Conn, data string) error {
-	_, err := (*connConfig).Write([]byte(data + "\r\n"))
+func write(connConfig *net.Conn, data []byte) error {
+	_, err := (*connConfig).Write(data)
 	time.Sleep(1 * time.Second)
 	return err
 }
@@ -38,8 +39,9 @@ func read(connData *net.Conn) ([]byte, error) {
 	return data, nil
 }
 
-func wr(connConfig *net.Conn, data string) string {
+func wr(connConfig *net.Conn, data []byte) string {
 	write(connConfig, data)
+	time.Sleep(2*time.Second)
 	ans, _ := read(connConfig)
 	return string(ans)
 }
@@ -72,7 +74,7 @@ func parse_get_connection_ftp(input string) (string, string) {
 }
 
 func command_PASV(connConfig *net.Conn) *net.Conn {
-	connData, err := open_conection(wr(connConfig, "PASV"))
+	connData, err := open_conection(wr(connConfig, []byte("PASV \r\n")))
 	if err != nil {
 		fmt.Println(err)
 		return nil
@@ -82,7 +84,7 @@ func command_PASV(connConfig *net.Conn) *net.Conn {
 
 func command_LIST(connConfig *net.Conn) {
 	connData := *command_PASV(connConfig)
-	write(connConfig, "LIST")
+	write(connConfig, []byte("LIST \r\n"))
 	data, _ := read(&connData)
 	fmt.Println(string(data))
 	defer connData.Close()
@@ -90,13 +92,27 @@ func command_LIST(connConfig *net.Conn) {
 
 func command_GET(connConfig *net.Conn, s string) {
 	connData := *command_PASV(connConfig)
-	write(connConfig, "RETR " + s + "\r\n")
+	write(connConfig, []byte("RETR " + s + "\r\n"))
 	data, err := read(&connData)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println(string(data))
+}
+
+func command_STORE(connConfig *net.Conn, filename string) {
+	fileData, err := os.ReadFile(filename)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    conn_data := command_PASV(connConfig)
+	fmt.Println(wr(connConfig, []byte("STOR " + filename + " \r\n")))
+	(*conn_data).Write(fileData)
+	(*conn_data).Close()
+	result, _ := read(connConfig)
+	fmt.Println(string(result))
 }
 
 func main() {
@@ -106,10 +122,11 @@ func main() {
 		return
 	}
 	defer connConfig.Close()
-	fmt.Println(wr(&connConfig, "Habla"))
-	fmt.Println(wr(&connConfig, "USER brito"))
-	fmt.Println(wr(&connConfig, "PASS password"))
-	fmt.Println(wr(&connConfig, "CWD /upload"))
+	fmt.Println(wr(&connConfig, []byte("Habla\r\n")))
+	fmt.Println(wr(&connConfig, []byte("USER brito\r\n")))
+	fmt.Println(wr(&connConfig, []byte("PASS password\r\n")))
+	fmt.Println(wr(&connConfig, []byte("CWD /upload\r\n")))
+	command_STORE(&connConfig, "client.go")
 	command_LIST(&connConfig)
 	command_GET(&connConfig, "demo.txt")
 }
