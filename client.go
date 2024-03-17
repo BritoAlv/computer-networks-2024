@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const max_size = 1024
+
 func write(connConfig *net.Conn, data []byte) error {
 	_, err := (*connConfig).Write(data)
 	time.Sleep(1 * time.Second)
@@ -17,7 +19,6 @@ func write(connConfig *net.Conn, data []byte) error {
 }
 
 func read(connData *net.Conn) ([]byte, error) {
-	max_size := 1024
 	tmp := make([]byte, max_size)
 	data := make([]byte, 0)
 	length := 0
@@ -90,29 +91,70 @@ func command_LIST(connConfig *net.Conn) {
 	defer connData.Close()
 }
 
-func command_GET(connConfig *net.Conn, s string) {
+func command_GET(connConfig *net.Conn, s string, useBinary bool) {
+	file, _ := os.Create("R" + s)
+	if useBinary {
+		fmt.Println(wr(connConfig, []byte("TYPE I\r\n")))
+	}
+	buffer := make([]byte, max_size)
+	
 	connData := *command_PASV(connConfig)
 	write(connConfig, []byte("RETR " + s + "\r\n"))
-	data, err := read(&connData)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(data))
+
+	for {
+        bytesRead, err := connData.Read(buffer) // Read the file in chunks
+
+        if err != nil {
+            if err != io.EOF {
+                fmt.Println(err)
+            }
+            break
+        }
+		file.Write(buffer[:bytesRead])
+    }
+	// this line made the code work !! .
+	connData.Close()
+	
+	result, _ := read(connConfig)
+	fmt.Println(string(result))
+	
+	fmt.Println(wr(connConfig, []byte("TYPE A\r\n")))
 }
 
-func command_STORE(connConfig *net.Conn, filename string) {
-	fileData, err := os.ReadFile(filename)
+func command_STORE(connConfig *net.Conn, filename string, useBinary bool) {
+	file, err := os.Open(filename)
     if err != nil {
         fmt.Println(err)
         return
     }
+	defer file.Close()
+	buffer := make([]byte, max_size)
+	if useBinary {
+		fmt.Println(wr(connConfig, []byte("TYPE I\r\n")))
+	}
     conn_data := command_PASV(connConfig)
-	fmt.Println(wr(connConfig, []byte("STOR " + filename + " \r\n")))
-	(*conn_data).Write(fileData)
+	fmt.Println(wr(connConfig, []byte("STOR " + filename + "\r\n")))
+
+	for {
+        bytesRead, err := file.Read(buffer) // Read the file in chunks
+
+        if err != nil {
+            if err != io.EOF {
+                fmt.Println(err)
+            }
+            break
+        }
+		(*conn_data).Write(buffer[:bytesRead])
+    }
+	
+	// this line made the code work !! .
 	(*conn_data).Close()
+
 	result, _ := read(connConfig)
 	fmt.Println(string(result))
+	
+	fmt.Println(wr(connConfig, []byte("TYPE A\r\n")))
+	
 }
 
 func main() {
@@ -126,7 +168,8 @@ func main() {
 	fmt.Println(wr(&connConfig, []byte("USER brito\r\n")))
 	fmt.Println(wr(&connConfig, []byte("PASS password\r\n")))
 	fmt.Println(wr(&connConfig, []byte("CWD /upload\r\n")))
-	command_STORE(&connConfig, "client.go")
+	command_STORE(&connConfig, "a.mp4", true)
+	command_GET(&connConfig, "a.mp4", true)
+	command_STORE(&connConfig, "client.go", false)
 	command_LIST(&connConfig)
-	command_GET(&connConfig, "demo.txt")
 }
