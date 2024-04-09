@@ -1,17 +1,22 @@
 package main
 
-func (cs *CommandsStruct) LS(command  string) (string, error) {
+func (cs *CommandsStruct) LS(command string) (string, error) {
 	// first try yo establish a PASSIVE Connection Data.
 	connData, err := cs.PASV()
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 	_, err = writeAndreadOnMemory(cs.connection, []byte("LIST \r\n"))
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 	data, err := readOnMemory(connData)
-	if err != nil{
+	if err != nil {
+		return "", err
+	}
+
+	_, err = readOnMemory(cs.connection)
+	if err != nil {
 		return "", err
 	}
 	defer (*connData).Close()
