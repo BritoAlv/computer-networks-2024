@@ -50,7 +50,7 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 			}
 			break
 		}
-		_, err = writeonMemory(cs.connection, buffer[:bytesRead])
+		_, err = writeonMemory(conn_data, buffer[:bytesRead])
 		if err != nil {
 			return "", err
 		}

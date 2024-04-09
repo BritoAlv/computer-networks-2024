@@ -25,6 +25,8 @@ func main() {
 		return
 	}
 	fmt.Println(string(response))
+	X.USER("brito")
+	X.PASS("password")
 	for {
 		fmt.Print(">> ")
 		reader := bufio.NewReader(os.Stdin)
@@ -50,7 +52,7 @@ func main() {
 
 		resultString, _ := resultCommand[0].Interface().(string)
 		if resultCommand[1].IsNil() {
-			fmt.Println("Command Says : " + resultString)
+			fmt.Println("Command Says : \n" + resultString)
 		} else {
 			resultError, _ := resultCommand[1].Interface().(error)
 			fmt.Println("Error : " + resultError.Error())
