@@ -1,15 +1,13 @@
 package main
 
-import (
-	"fmt"
-)
-
-func (cs *CommandsStruct) PASS(args string) error  {
-	response := wr(cs.connection, []byte("PASS " + args + "\r\n"))
-	if starts_with(response, "230") {
-		fmt.Println("Todo en talla")
-		return nil
+func (cs *CommandsStruct) PASS(args string) (string, error)  {
+	response, err := writeAndreadOnMemory(cs.connection, []byte("PASS " + args + "\r\n"))
+	if err != nil{
+		return "", err
+	}
+	if starts_with(string(response), "230") {
+		return string(response)[3:], nil
 	} else {
-		return fmt.Errorf("error: %s", response)		
+		return "Wrong: " + string(response)[3:], nil
 	}
 }

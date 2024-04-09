@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"net"
 )
 
-func (cs *CommandsStruct) PASV(command string)  *net.Conn {
-	connData, err := open_conection(wr(cs.connection, []byte("PASV \r\n")))
-	if err != nil {
-		fmt.Println(err)
-		return nil
+func (cs *CommandsStruct) PASV() (*net.Conn, error) {
+	data, err := writeAndreadOnMemory(cs.connection, []byte("PASV \r\n"))
+	if err != nil{
+		return nil, err
 	}
-	return &connData
+	connData, err := open_conection(string(data))
+	if err != nil {
+		return nil, err
+	}
+	return &connData, nil
 }

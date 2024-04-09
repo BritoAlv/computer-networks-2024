@@ -1,16 +1,15 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
+	"errors"
 	"io"
 	"net"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
+const max_size = 1024
 func starts_with(command, prefix string) bool{
 	// Function to check if a string starts with a prefix
 	return len(command) >= len(prefix) && command[:len(prefix)] == prefix
@@ -35,54 +34,11 @@ func is_valid_ip(ip string) bool {
 	return true
 }
 
-func read_input() string {
-	scanner := bufio.NewReader(os.Stdin)
-	input, _ := scanner.ReadString('\n')
-	return input[:len(input)-1]
-}
-
-const max_size = 1024
-
-func write(connConfig *net.Conn, data []byte) error {
-	_, err := (*connConfig).Write(data)
-	time.Sleep(1 * time.Second)
-	return err
-}
-
-func read(connData *net.Conn) ([]byte, error) {
-	tmp := make([]byte, max_size)
-	data := make([]byte, 0)
-	length := 0
-	for {
-		n, err := (*connData).Read(tmp)
-		if err != nil {
-			if err != io.EOF {
-				r := make([]byte, 0)
-				return r, err
-			}
-			break
-		}
-		data = append(data, tmp[:n]...)
-		length += n
-		if n < max_size {
-			break
-		}
-	}
-	return data, nil
-}
-
-func wr(connConfig *net.Conn, data []byte) string {
-	write(connConfig, data)
-	time.Sleep(2*time.Second)
-	ans, _ := read(connConfig)
-	return string(ans)
-}
 
 func open_conection(connDataConfig string) (net.Conn, error) {
 	connDataIP, connDataPort := parse_get_connection_ftp(connDataConfig)
 	connData, err := net.Dial("tcp", connDataIP+":"+connDataPort)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return connData, nil
@@ -103,4 +59,55 @@ func parse_get_connection_ftp(input string) (string, string) {
 
 	port := strconv.FormatInt((first_part_port*256 + second_part_port), 10)
 	return ip, port
+}
+
+func writeonMemory(connData *net.Conn, data []byte) (int, error) {
+	// I wll read from server in chunks of size 1024 KBs.
+	pr := 0
+	for {
+		(*connData).SetWriteDeadline(time.Now().Add(2 * time.Second))
+		size_to_write := min(1024, len(data) - pr)
+		n, err := (*connData).Write(data[pr : pr+size_to_write])
+		if err != nil {
+			return pr, nil
+		}
+		if n != size_to_write{ 
+			return n, errors.New("not everything was written")
+		}
+		pr += n
+		if pr == len(data) {
+			break
+		}
+	}
+	return pr, nil
+}
+
+func readOnMemory(connData *net.Conn) ([]byte, error) {
+	// I wll read from server in chunks of size 1024 KBs.
+	tmp := make([]byte, 1024)
+	data := make([]byte, 0)
+	for {
+		(*connData).SetReadDeadline(time.Now().Add(2 * time.Second))
+		n, err := (*connData).Read(tmp)
+		if err != nil {
+			if err != io.EOF {
+				r := make([]byte, 0)
+				return r, err
+			}
+			break
+		}
+		data = append(data, tmp[:n]...)
+		if n < max_size {
+			break
+		}
+	}
+	return data, nil
+}
+
+func writeAndreadOnMemory(connData *net.Conn, data []byte) ([]byte, error) {
+	_, err := writeonMemory(connData, data)
+	if err != nil {
+		return nil, err
+	}
+	return readOnMemory(connData)
 }

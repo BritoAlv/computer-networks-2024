@@ -1,13 +1,19 @@
 package main
 
-import (
-	"fmt"
-)
-
-func (cs *CommandsStruct) LS(command  string) {
-	connData := *cs.PASV("")
-	write(cs.connection, []byte("LIST \r\n"))
-	data, _ := read(&connData)
-	fmt.Println(string(data))
-	defer connData.Close()
+func (cs *CommandsStruct) LS(command  string) (string, error) {
+	// first try yo establish a PASSIVE Connection Data.
+	connData, err := cs.PASV()
+	if err != nil{
+		return "", err
+	}
+	_, err = writeAndreadOnMemory(cs.connection, []byte("LIST \r\n"))
+	if err != nil{
+		return "", err
+	}
+	data, err := readOnMemory(connData)
+	if err != nil{
+		return "", err
+	}
+	defer (*connData).Close()
+	return string(data), nil
 }
