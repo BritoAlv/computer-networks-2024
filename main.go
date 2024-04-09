@@ -25,8 +25,9 @@ func main() {
 		return
 	}
 	fmt.Println(string(response))
-	X.USER("brito")
-	X.PASS("password")
+
+	X.USER("javier")
+	X.PASS("CubaLibre")
 	for {
 		fmt.Print(">> ")
 		reader := bufio.NewReader(os.Stdin)
