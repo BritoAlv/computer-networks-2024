@@ -21,7 +21,7 @@ func (cs *CommandsStruct) GET(arg string) (string, error) {
 }
 
 func command_get(cs *CommandsStruct, s string, useBinary bool) (string, error) {
-	file, _ := os.Create("R" + s)
+	file, _ := os.Create(s)
 	if useBinary {
 		_, err := writeAndreadOnMemory(cs.connection, []byte("TYPE I\r\n"))
 		if err != nil {
@@ -36,12 +36,11 @@ func command_get(cs *CommandsStruct, s string, useBinary bool) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
-	bytesRead, err := readOnMemory(connData)
-	if err != nil {
+	err = readOnFile(connData, file)
+	if err != nil{
+		os.Remove(file.Name())
 		return "", err
 	}
-	file.Write(bytesRead)
 	// this line made the code work !! .
 	(*connData).Close()
 	result, err := readOnMemory(cs.connection)
@@ -53,5 +52,4 @@ func command_get(cs *CommandsStruct, s string, useBinary bool) (string, error) {
 		return "", err
 	}
 	return string(result), nil
-
 }
