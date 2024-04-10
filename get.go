@@ -12,10 +12,10 @@ func (cs *CommandsStruct) GET(arg string) (string, error) {
 		return "Bad Arguments" + "Provide Arguments: get filename binary/ascii" + "get file.go A" + "get file.mp4 B" , nil
 	}
 	if args[1] == "A" {
-		return command_get(cs, args[0], false)
+		return command_get(cs, strings.TrimSpace(args[0]), false)
 	}
 	if args[1] == "B" {
-		return command_get(cs, args[0], true)
+		return command_get(cs, strings.TrimSpace(args[0]), true)
 	}
 	return "", nil
 }

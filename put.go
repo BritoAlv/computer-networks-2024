@@ -13,10 +13,10 @@ func (cs *CommandsStruct) PUT(command string) (string, error) {
 		return "Provide Arguments: put filename binary/ascii" + "put file.go A" + "put file.mp4 B", nil
 	}
 	if args[1] == "A" {
-		return command_store(cs, args[0], false)
+		return command_store(cs, strings.TrimSpace(args[0]), false)
 	}
 	if args[1] == "B" {
-		return command_store(cs, args[0], true)
+		return command_store(cs, strings.TrimSpace(args[0]), true)
 	}
 	return "", nil
 }
