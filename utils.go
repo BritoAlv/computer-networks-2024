@@ -132,3 +132,22 @@ func readOnFile(connData *net.Conn, file *os.File) error {
 	}
 	return nil
 }
+
+
+var FTPErrorMessages = map[string][]string{
+	// GO says that errors should not be capitalized 
+	"200": {"comando se ha ejecutado con éxito.", ""},
+	"421": {"", "servicio FTP no está disponible."},
+}
+
+func ParseFTPCode(code string) (string, error) {
+	message, exists := FTPErrorMessages[code]
+	if !exists {
+		return "",errors.New("codigo de error desconocido")
+	}
+	msg := message[0]
+	if( message[1] == ""){
+		return msg, nil
+	}
+	return msg, errors.New(message[1])
+}
