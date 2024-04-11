@@ -57,6 +57,9 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 	if err != nil {
 		return "", err
 	}
+	/*
+	some folders do not have allowed access.
+	*/
 	_, err = writeAndreadOnMemory(cs.connection, []byte("TYPE A\r\n"))
 	if err != nil {
 		return "", err
