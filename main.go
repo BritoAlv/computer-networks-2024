@@ -11,7 +11,7 @@ import (
 
 func main() {
 	var X CommandsStruct
-	conn, err := net.Dial("tcp", "127.0.0.1"+":"+"21")
+	conn, err := net.Dial("tcp", "192.168.43.190"+":"+"2020")
 	if err != nil {
 		fmt.Println("Connection can't be established: ")
 		fmt.Println("	" + err.Error())
@@ -24,10 +24,9 @@ func main() {
 		fmt.Println("	" + err.Error())
 		return
 	}
+	X.USER("android")
+	X.PASS("android")
 	fmt.Println(string(response))
-
-	X.USER("your_user")
-	X.PASS("your_password")
 	for {
 		fmt.Print(">> ")
 		reader := bufio.NewReader(os.Stdin)
@@ -35,7 +34,7 @@ func main() {
 		command = strings.Split(command, "\n")[0]
 		parts := strings.Split(command, " ")
 		if len(parts) == 0 {
-			fmt.Println("Que haces Calavera")
+			fmt.Println("Wrongg")
 			continue
 		}
 		command_name := parts[0]
@@ -46,7 +45,7 @@ func main() {
 		method := reflect.ValueOf(&X).MethodByName(strings.ToUpper(command_name))
 
 		if !method.IsValid() {
-			fmt.Println("Calavera pon algo que entienda... como help")
+			fmt.Println("help maybe ?")
 			continue
 		}
 		resultCommand := method.Call([]reflect.Value{reflect.ValueOf(strings.TrimSpace(command[len(command_name):]))})

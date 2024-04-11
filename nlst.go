@@ -1,16 +1,10 @@
 package main
 
 import (
-	"errors"
 	"strings"
 )
 
 func (cs *CommandsStruct) NLST(input string) (string, error) {
-	split := strings.Split(input, " ")
-
-	if len(split) != 1 {
-		return "", errors.New("invalid input")
-	}
 
 	// Enter Passive Mode
 	connData, passErr := cs.PASV()
@@ -18,7 +12,7 @@ func (cs *CommandsStruct) NLST(input string) (string, error) {
 		return "", passErr
 	}
 
-	_, lisErr := writeAndreadOnMemory(cs.connection, []byte("NLST "+"\r\n"))
+	_, lisErr := writeAndreadOnMemory(cs.connection, []byte("NLST " + strings.TrimSpace(input) + "\r\n"))
 	if lisErr != nil {
 		return "", lisErr
 	}

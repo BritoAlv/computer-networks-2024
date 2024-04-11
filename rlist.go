@@ -10,7 +10,7 @@ func (cs *CommandsStruct) RNLS(path string) (string, error) {
 	if len(split) >= 2 || len(split) == 0 {
 		return "", errors.New("wrong Argument Format: rnls (path)*")
 	}
-	return recLS(cs, split[0], 0, "")	
+	return recLS(cs, split[0], 0, "")
 }
 
 func recLS(cs *CommandsStruct, path string, i int, prev string) (string, error) {
@@ -25,27 +25,32 @@ func recLS(cs *CommandsStruct, path string, i int, prev string) (string, error) 
 		j++
 	}
 
-	response, err := cs.LS(path)
+	response1, err := cs.LS(path)
 	if err != nil {
 		return "", errors.New("something is wrong with LS")
 	}
-	archives := strings.Split(response, "\n")
-
-	archivesFIltered := []string{}
-	for _, arch := range archives {
+	response2, err := cs.NLST(path)
+	if err != nil {
+		return "", errors.New("something is wrong with NLS")
+	}
+	archives1 := strings.Split(response1, "\n")
+	archives2 := strings.Split(response2, "\n")
+	archivesFiltered1 := []string{}
+	archivesFiltered2 := []string{}
+	for index, arch := range archives1 {
 		if len(arch) > 0 {
-			archivesFIltered = append(archivesFIltered, arch)
+			archivesFiltered1 = append(archivesFiltered1, arch)
+			archivesFiltered2 = append(archivesFiltered2, archives2[index])
 		}
 	}
-	archives = archivesFIltered
-	if len(archives) > 0 {
-		for index, arch := range archives {
-			arch = arch[:len(arch)-1]
-			arch = strings.TrimSpace(arch)
-			parts := strings.Split(arch, " ")
+	archives1 = archivesFiltered1
+	if len(archives1) > 0 {
+		for index, arch := range archives1 {
+			parts := strings.Split(archivesFiltered2[index], "/")
 			filename := parts[len(parts)-1]
+			filename = filename[:len(filename)-1]
 			var marker string = ""
-			if index == len(archives)-1 {
+			if index == len(archives1)-1 {
 				marker = "└──"
 			} else {
 				marker = "├──"

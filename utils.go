@@ -133,7 +133,6 @@ func readOnFile(connData *net.Conn, file *os.File) error {
 	return nil
 }
 
-
 var FTPErrorMessages = map[string][]string{
 	// GO says that errors should not be capitalized 
 	"200": {"Command okay.", ""},
