@@ -23,6 +23,6 @@ RNTO
 ABOR
 SITE
 SYST
-STAT
-HELP
+xxxxxxxxxxxxxxxx STAT Not supported by remote ftp server
+---------------- HELP
 NOOP
