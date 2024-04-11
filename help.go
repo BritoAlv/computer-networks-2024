@@ -1,19 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
 func (cs *CommandsStruct) HELP(args string) (string, error) {
-	response, err := writeAndreadOnMemory(cs.connection, []byte("HELP" +"\r\n"))
-	
-	fmt.Print(string(response))
-	fmt.Print(err)
-	
+	response, err := writeAndreadOnMemory(cs.connection, []byte("HELP"+"\r\n"))
 	if err != nil {
 		return "There was something wrong", err
 	}
-	code := strings.Split(string(response), " ")[0]
+	// TODO: we should give something like what this gives but with our commands
+	code := strings.Split(string(response), "-")[0]
+	if code == "214" {
+		return string(response), nil
+	}
 	return ParseFTPCode(code)
 }
