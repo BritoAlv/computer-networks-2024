@@ -9,7 +9,7 @@ Aqui estan listados los comandos que nos faltan.
 ACCT 
 SMNT 
 REIN
-QUIT
+---------------- QUIT 
 PORT
 TYPE lo tenememos pero no se si debe ser expuesto al cliente
 STRU
@@ -18,11 +18,11 @@ STOU
 APPE
 ALLO
 REST
-RNFR
-RNTO
+---------------- RNFR
+---------------- RNTO
 ABOR
 SITE
 SYST
-STAT
-HELP
-NOOP
+xxxxxxxxxxxxxxxx STAT Not supported by remote ftp server
+---------------- HELP
+---------------- NOOP
