@@ -11,7 +11,13 @@ import (
 
 func main() {
 	var X CommandsStruct
-	conn, err := net.Dial("tcp", "192.168.43.190"+":"+"2020")
+	var ip string
+	var port string
+	fmt.Print("Ip : ")
+	fmt.Scanln(&ip)
+	fmt.Print("Port : ")
+	fmt.Scanln(&port)
+	conn, err := net.Dial("tcp", strings.TrimSpace(ip)+":"+strings.TrimSpace(port))
 	if err != nil {
 		fmt.Println("Connection can't be established: ")
 		fmt.Println("	" + err.Error())
@@ -24,8 +30,6 @@ func main() {
 		fmt.Println("	" + err.Error())
 		return
 	}
-	X.USER("android")
-	X.PASS("android")
 	fmt.Println(string(response))
 	for {
 		fmt.Print(">> ")
