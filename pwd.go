@@ -14,9 +14,5 @@ func (cs *CommandsStruct) PWD(input string) (string, error) {
 		return "", err
 	}
 
-	if starts_with(string(response), "257") {
-		return string(response)[3:], nil
-	} else {
-		return "Wrong: " + string(response)[3:], nil
-	}
+	return ParseFTPCode(string(response)[0:3])
 }

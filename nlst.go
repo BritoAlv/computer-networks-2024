@@ -36,6 +36,6 @@ func (cs *CommandsStruct) NLST(input string) (string, error) {
 	if starts_with(string(response), "226") {
 		return string(data), nil
 	} else {
-		return "Wrong: " + string(response)[3:], nil
+		return ParseFTPCode(string(response)[0:3])
 	}
 }
