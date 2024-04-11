@@ -18,11 +18,11 @@ STOU
 APPE
 ALLO
 REST
-RNFR
-RNTO
+---------------- RNFR
+---------------- RNTO
 ABOR
 SITE
 SYST
 xxxxxxxxxxxxxxxx STAT Not supported by remote ftp server
 ---------------- HELP
-NOOP
+---------------- NOOP
