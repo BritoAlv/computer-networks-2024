@@ -1,24 +1,20 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"os"
 	"strings"
 )
 
-func (cs *CommandsStruct) PUT(command string) (string, error) {
-	// split command in args.
-	args := strings.Split(command, " ")
-	if len(args) < 2 || (args[1] != "A" && args[1] != "B") {
-		return "Provide Arguments: put filename binary/ascii" + "put file.go A" + "put file.mp4 B", nil
+func (cs *CommandsStruct) PUT(arg string) (string, error) {
+	if arg[len(arg)-1] == 'A' {
+		return command_store(cs, strings.TrimSpace(arg[:len(arg)-1]), false)
+	} else if arg[len(arg)-1] == 'B' {
+		return command_store(cs, strings.TrimSpace(arg[:len(arg)-1]), true)
+	} else {
+		return "", errors.New("wrong arguments")
 	}
-	if args[1] == "A" {
-		return command_store(cs, strings.TrimSpace(args[0]), false)
-	}
-	if args[1] == "B" {
-		return command_store(cs, strings.TrimSpace(args[0]), true)
-	}
-	return "", nil
 }
 
 func command_store(cs *CommandsStruct, filename string, useBinary bool) (string, error) {

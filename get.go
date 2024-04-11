@@ -1,25 +1,19 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"strings"
 )
 
-
-
 func (cs *CommandsStruct) GET(arg string) (string, error) {
-	// split command in args.
-	args := strings.Split(arg, " ")
-	if len(args) < 2 || (args[1] != "A" && args[1] != "B") {
-		return "Bad Arguments" + "Provide Arguments: get filename binary/ascii" + "get file.go A" + "get file.mp4 B", nil
+	if arg[len(arg)-1] == 'A' {
+		return command_get(cs, strings.TrimSpace(arg[:len(arg)-1]), false)
+	} else if arg[len(arg)-1] == 'B'{
+		return command_get(cs, strings.TrimSpace(arg[:len(arg)-1]), true)
+	} else{
+		return "", errors.New("wrong arguments")
 	}
-	if args[1] == "A" {
-		return command_get(cs, strings.TrimSpace(args[0]), false)
-	}
-	if args[1] == "B" {
-		return command_get(cs, strings.TrimSpace(args[0]), true)
-	}
-	return "", nil
 }
 
 func command_get(cs *CommandsStruct, s string, useBinary bool) (string, error) {
