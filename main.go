@@ -26,8 +26,31 @@ func main() {
 	}
 	fmt.Println(string(response))
 
-	X.USER("your_user")
-	X.PASS("your_password")
+	// Login step, this can be abstracted away, but i find weird
+	//  to take a function to loop over an input 
+	for {
+		fmt.Println("Introduce a user name, or type ANONYMOUS.")
+		reader := bufio.NewReader(os.Stdin)
+		userName, _ := reader.ReadString('\n')
+		userName = strings.TrimSpace(userName)
+		if (userName == "ANONYMOUS"){
+			X.ANONYMOUS(" "); 
+			break; 
+		}		
+		fmt.Println("Introduce your password")
+		reader = bufio.NewReader(os.Stdin)
+		passWord, _ := reader.ReadString('\n')
+		passWord = strings.TrimSpace(passWord)
+		X.USER(userName)
+		res, err := X.PASS(passWord)
+		if starts_with(res,"Wrong") || err != nil {
+			fmt.Println("Login error")
+		}else{
+			fmt.Println(res)
+			break; 
+		}
+	}
+
 	for {
 		fmt.Print(">> ")
 		reader := bufio.NewReader(os.Stdin)
