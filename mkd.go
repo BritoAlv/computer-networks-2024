@@ -1,20 +1,23 @@
 package main
 
-import (
-	"errors"
-	"strings"
-)
+import "strings"
 
 func (cs *CommandsStruct) MKD(input string) (string, error) {
-	split := strings.Split(input, " ")
 
-	if len(split) != 1 {
-		return "", errors.New("invalid input")
-	}
+	directories := strings.Split(input, "/")
+	var response []byte
+	var err error
+	currentDirectory := directories[0]
 
-	response, err := writeAndreadOnMemory(cs.connection, []byte("MKD "+split[0]+"\r\n"))
-	if err != nil {
-		return "", err
+	for i := 0; i < len(directories); i++ {
+		if i > 0 {
+			currentDirectory += "/" + directories[i]
+		}
+
+		response, err = writeAndreadOnMemory(cs.connection, []byte("MKD "+currentDirectory+"\r\n"))
+		if err != nil {
+			return "", err
+		}
 	}
 
 	return ParseFTPCode(string(response)[0:3])
