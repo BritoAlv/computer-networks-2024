@@ -66,7 +66,7 @@ func writeonMemory(connData *net.Conn, data []byte) (int, error) {
 	// I wll read from server in chunks of size 1024 KBs.
 	pr := 0
 	for {
-		(*connData).SetWriteDeadline(time.Now().Add(2 * time.Second))
+		(*connData).SetWriteDeadline(time.Now().Add(60 * time.Second))
 		size_to_write := min(1024, len(data)-pr)
 		n, err := (*connData).Write(data[pr : pr+size_to_write])
 		if err != nil {
@@ -88,7 +88,7 @@ func readOnMemory(connData *net.Conn) ([]byte, error) {
 	tmp := make([]byte, 1024)
 	data := make([]byte, 0)
 	for {
-		(*connData).SetReadDeadline(time.Now().Add(2 * time.Second))
+		(*connData).SetReadDeadline(time.Now().Add(60 * time.Second))
 		n, err := (*connData).Read(tmp)
 		if err != nil {
 			if err != io.EOF {
@@ -117,7 +117,7 @@ func readOnFile(connData *net.Conn, file *os.File) error {
 	// I wll read from server in chunks of size 1024 KBs.
 	tmp := make([]byte, 1024)
 	for {
-		(*connData).SetReadDeadline(time.Now().Add(2 * time.Second))
+		(*connData).SetReadDeadline(time.Now().Add(60 * time.Second))
 		n, err := (*connData).Read(tmp)
 		if err != nil {
 			if err != io.EOF {
