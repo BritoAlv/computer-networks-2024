@@ -24,7 +24,7 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 	}
 	defer file.Close()
 	if useBinary {
-		_, err := writeAndreadOnMemory(cs.connection, []byte("TYPE I\r\n"))
+		_, err := writeAndreadOnMemory(cs.connection, "TYPE I")
 		if err != nil {
 			return "", err
 		}
@@ -33,7 +33,7 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 	if err != nil {
 		return "", err
 	}
-	_, err = writeAndreadOnMemory(cs.connection, []byte("STOR "+filename+"\r\n"))
+	_, err = writeAndreadOnMemory(cs.connection, "STOR "+filename)
 	if err != nil {
 		return "", err
 	}
@@ -46,21 +46,17 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 			}
 			break
 		}
-		_, err = writeonMemory(conn_data, buffer[:bytesRead])
+		_, err = writeonMemoryPassive(conn_data, buffer[:bytesRead])
 		if err != nil {
 			return "", err
 		}
 	}
-	// this line made the code work !! .
 	(*conn_data).Close()
-	result, err := readOnMemory(cs.connection)
+	result, err := readOnMemoryDefault(cs.connection)
 	if err != nil {
 		return "", err
 	}
-	/*
-	some folders do not have allowed access.
-	*/
-	_, err = writeAndreadOnMemory(cs.connection, []byte("TYPE A\r\n"))
+	_, err = writeAndreadOnMemory(cs.connection, "TYPE A")
 	if err != nil {
 		return "", err
 	}

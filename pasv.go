@@ -5,16 +5,11 @@ import (
 )
 
 func (cs *CommandsStruct) PASV() (*net.Conn, error) {
-	data, err := writeAndreadOnMemory(cs.connection, []byte("PASV \r\n"))
+	data, err := writeAndreadOnMemory(cs.connection, "PASV ")
 	if err != nil{
 		return nil, err
 	}
-	response := string(data)
-	_, err = ParseFTPCode(response[:3])
-	if err != nil {
-		return nil, err
-	} 
-	connData, err := open_conection(string(data))
+	connData, err := open_conection(data)
 	if err != nil {
 		return nil, err
 	}

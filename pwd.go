@@ -1,18 +1,25 @@
 package main
 
-import (
-	"errors"
-)
-
-func (cs *CommandsStruct) PWD(input string) (string, error) {
-	if input != "" {
-		return "", errors.New("invalid input")
-	}
-
-	response, err := writeAndreadOnMemory(cs.connection, []byte("PWD "+"\r\n"))
+func (cs *CommandsStruct) PWD(input string) (string, error) {	
+	response, err := writeAndreadOnMemory(cs.connection, "PWD ")
 	if err != nil {
 		return "", err
 	}
-
-	return ParseFTPCode(string(response)[0:3])
+	result := string(response)
+	start := 0
+	end := len(result)
+	for i := 0; i < len(result); i++ {
+		if result[i] == '"'{
+			start = i+1
+			for j := i+1; j < len(result); j++ {
+				if result[j] == '"' {
+					end = j
+					break
+				}
+			}
+			break
+		}		
+	}
+	result = result[start:end]
+	return result, nil
 }

@@ -8,18 +8,18 @@ func (cs *CommandsStruct) LS(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_, err = writeAndreadOnMemory(cs.connection, []byte("LIST "+ strings.TrimSpace(path) + "\r\n"))
+	_, err = writeAndreadOnMemory(cs.connection, "LIST "+ strings.TrimSpace(path))
 	if err != nil {
 		return "", err
 	}
-	data, err := readOnMemory(connData)
+	data, err := readOnMemoryPassive(connData)
 	if err != nil {
 		return "", err
 	}
-	_, err = readOnMemory(cs.connection)
+	_, err = readOnMemoryDefault(cs.connection)
 	if err != nil {
 		return "", err
 	}
 	defer (*connData).Close()
-	return string(data), nil
+	return data, nil
 }

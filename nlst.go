@@ -12,24 +12,19 @@ func (cs *CommandsStruct) NLST(input string) (string, error) {
 		return "", passErr
 	}
 
-	_, lisErr := writeAndreadOnMemory(cs.connection, []byte("NLST " + strings.TrimSpace(input) + "\r\n"))
+	_, lisErr := writeAndreadOnMemory(cs.connection, "NLST " + strings.TrimSpace(input))
 	if lisErr != nil {
 		return "", lisErr
 	}
 
-	data, dataErr := readOnMemory(connData)
+	data, dataErr := readOnMemoryPassive(connData)
 	if dataErr != nil {
 		return "", dataErr
 	}
 
-	response, doneErr := readOnMemory(cs.connection)
+	_, doneErr := readOnMemoryDefault(cs.connection)
 	if doneErr != nil {
 		return "", doneErr
 	}
-
-	if starts_with(string(response), "226") {
-		return string(data), nil
-	} else {
-		return ParseFTPCode(string(response)[0:3])
-	}
+	return data, nil
 }

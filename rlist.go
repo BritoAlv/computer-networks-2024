@@ -14,7 +14,6 @@ func (cs *CommandsStruct) RNLS(path string) (string, error) {
 }
 
 func recLS(cs *CommandsStruct, path string, i int, prev string) (string, error) {
-
 	spacing := ""
 	j := 0
 	for {
@@ -25,46 +24,31 @@ func recLS(cs *CommandsStruct, path string, i int, prev string) (string, error) 
 		j++
 	}
 
-	response1, err := cs.LS(path)
+	folders, files , err  := get_files_folders_current(cs, path)
 	if err != nil {
-		return "", errors.New("something is wrong with LS")
+		return "", err
 	}
-	response2, err := cs.NLST(path)
-	if err != nil {
-		return "", errors.New("something is wrong with NLS")
-	}
-	archives1 := strings.Split(response1, "\n")
-	archives2 := strings.Split(response2, "\n")
-	archivesFiltered1 := []string{}
-	archivesFiltered2 := []string{}
-	for index, arch := range archives1 {
-		if len(arch) > 0 {
-			archivesFiltered1 = append(archivesFiltered1, arch)
-			archivesFiltered2 = append(archivesFiltered2, archives2[index])
+	for index, fold := range folders {
+		var marker string = ""
+		if index == len(folders)-1 {
+			marker = "└──"
+		} else {
+			marker = "├──"
+		}
+		prev += spacing + marker + fold + "\n"
+		prev, err = recLS(cs, path+"/"+fold, i+1, prev)
+		if err != nil {
+			return "", errors.New("something wrong when recursion: " + path + " " +  err.Error())
 		}
 	}
-	archives1 = archivesFiltered1
-	if len(archives1) > 0 {
-		for index, arch := range archives1 {
-			parts := strings.Split(archivesFiltered2[index], "/")
-			filename := parts[len(parts)-1]
-			filename = filename[:len(filename)-1]
-			var marker string = ""
-			if index == len(archives1)-1 {
-				marker = "└──"
-			} else {
-				marker = "├──"
-			}
-			if arch[0] == 'd' {
-				prev += spacing + marker + filename + "\n"
-				prev, err = recLS(cs, path+"/"+filename, i+1, prev)
-				if err != nil {
-					return "", errors.New("something wrong with recursion")
-				}
-			} else {
-				prev += spacing + marker + filename + "\n"
-			}
+	for index, file := range files {
+		var marker string = ""
+		if index == len(files)-1 {
+			marker = "└──"
+		} else {
+			marker = "├──"
 		}
+		prev += spacing + marker + file + "\n"
 	}
 	return prev, nil
 }

@@ -11,25 +11,25 @@ import (
 
 func main() {
 	var X CommandsStruct
-	var ip string
-	var port string
-	fmt.Print("Ip : ")
-	fmt.Scanln(&ip)
-	fmt.Print("Port : ")
-	fmt.Scanln(&port)
-	conn, err := net.Dial("tcp", strings.TrimSpace(ip)+":"+strings.TrimSpace(port))
+
+	ftptouse := Local
+
+	conn, err := net.Dial("tcp", strings.TrimSpace(ftptouse.ip)+":"+strings.TrimSpace(ftptouse.port))
 	if err != nil {
 		fmt.Println("Connection can't be established: ")
 		fmt.Println("	" + err.Error())
 		return
 	}
 	X.connection = &conn
-	response, err := readOnMemory(&conn)
+	response, err := readOnMemoryDefault(&conn)
 	if err != nil {
 		fmt.Println("There was a problem getting the response")
 		fmt.Println("	" + err.Error())
 		return
 	}
+	X.USER(ftptouse.user)
+	X.PASS(ftptouse.password)
+
 	fmt.Println(string(response))
 	for {
 		fmt.Print(">> ")
@@ -55,6 +55,7 @@ func main() {
 		resultCommand := method.Call([]reflect.Value{reflect.ValueOf(strings.TrimSpace(command[len(command_name):]))})
 
 		resultString, _ := resultCommand[0].Interface().(string)
+		
 		if resultCommand[1].IsNil() {
 			fmt.Println("Command Says : \n" + resultString)
 		} else {
