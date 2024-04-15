@@ -11,7 +11,7 @@ func (cs *CommandsStruct) MKD(input string) (string, error) {
 		if i > 0 {
 			currentDirectory += "/" + directories[i]
 		}
-		_, err := writeAndreadOnMemory(cs.connection, "MKD "+currentDirectory)
+		_, err := writeAndreadOnMemory(cs.connectionConfig, "MKD "+currentDirectory)
 		if err != nil {
 			return "", err
 		}

@@ -1,5 +1,5 @@
 package main
 
 func (cs *CommandsStruct) USER(username string) (string, error) {
-	return writeAndreadOnMemory(cs.connection, "USER " + username) 
+	return writeAndreadOnMemory(cs.connectionConfig, "USER " + username) 
 }

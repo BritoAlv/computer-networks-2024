@@ -1,7 +1,7 @@
 package main
 
 func (cs *CommandsStruct) PWD(input string) (string, error) {	
-	response, err := writeAndreadOnMemory(cs.connection, "PWD ")
+	response, err := writeAndreadOnMemory(cs.connectionConfig, "PWD ")
 	if err != nil {
 		return "", err
 	}

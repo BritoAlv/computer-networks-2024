@@ -5,7 +5,7 @@ import (
 )
 
 func (cs *CommandsStruct) PASV() (*net.Conn, error) {
-	data, err := writeAndreadOnMemory(cs.connection, "PASV ")
+	data, err := writeAndreadOnMemory(cs.connectionConfig, "PASV ")
 	if err != nil{
 		return nil, err
 	}

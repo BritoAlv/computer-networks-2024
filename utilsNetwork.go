@@ -85,7 +85,7 @@ func readOnMemoryDefault(connData *net.Conn) (string, error) {
 	response := string(tmp[:n])
 	err = CheckResponseNumber(response[:3])
 	if err != nil {
-		return "", err
+		return response, err
 	}
 	return string(tmp[:n]), nil
 }

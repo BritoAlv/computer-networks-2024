@@ -4,6 +4,11 @@ package main
 const max_size = 8192
 const timeout = 10
 
+const append_flag = "--append"
+const unique_flag = "--unique"
+const binary_flag = "--binary"
+const ascii_flag = "--ascii"
+
 var FTPErrorMessages = map[string][]string{
 	// GO says that errors should not be capitalized
 	"110": {"Restart marker reply.", ""},

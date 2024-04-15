@@ -1,20 +1,21 @@
 package main
 
 import (
-	"errors"
 	"os"
-	"strconv"
 	"strings"
 )
 
-func (cs *CommandsStruct) GET(path string) (string, error) {
-	if path[len(path)-1] == 'A' {
-		return command_get(cs, strings.TrimSpace(path[:len(path)-1]), false)
-	} else if path[len(path)-1] == 'B' {
-		return command_get(cs, strings.TrimSpace(path[:len(path)-1]), true)
-	} else {
-		return "", errors.New("wrong arguments")
+func (cs *CommandsStruct) GET(arg string) (string, error) {
+	useBinary := true
+	if strings.HasPrefix(arg, binary_flag) {
+		useBinary = true
+		arg = strings.TrimSpace(arg[len(binary_flag):])
 	}
+	if strings.HasPrefix(arg, ascii_flag) {
+		useBinary = false
+		arg = strings.TrimSpace(arg[len(ascii_flag):])
+	}
+	return command_get(cs, strings.TrimSpace(arg), useBinary)
 }
 
 func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, error) {
@@ -26,28 +27,22 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 		return "", err
 	}
 	if useBinary {
-		_, err := writeAndreadOnMemory(cs.connection, "TYPE I")
+		_, err := cs.TYPE("I")
 		if err != nil {
 			return "", err
 		}
 	}
-	size, err := writeAndreadOnMemory(cs.connection, "SIZE " + pathname)
+
+	sizeint, err := cs.SIZE(pathname)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	
-	_, err = writeAndreadOnMemory(cs.connection, "RETR "+ pathname )
+	_, err = writeAndreadOnMemory(cs.connectionConfig, "RETR "+pathname)
 	if err != nil {
 		return "", err
 	}
 
-	// convert size
-	sizeStr := string(size)
-
-	sizeStr = strings.Split(sizeStr, " ")[1]
-	sizeStr = strings.Split(sizeStr, "\r\n")[0]
-
-	sizeint, _ := strconv.ParseInt(sizeStr, 10, 64)
 
 	err = readOnFile(connData, file, sizeint)
 	if err != nil {
@@ -56,11 +51,11 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 	}
 	// this line made the code work !! .
 	(*connData).Close()
-	result, err := readOnMemoryDefault(cs.connection)
+	result, err := readOnMemoryDefault(cs.connectionConfig)
 	if err != nil {
 		return "", err
 	}
-	_, err = writeAndreadOnMemory(cs.connection, "TYPE A")
+	_, err = cs.TYPE("A")
 	if err != nil {
 		return "", err
 	}

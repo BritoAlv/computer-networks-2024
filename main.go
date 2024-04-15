@@ -20,7 +20,8 @@ func main() {
 		fmt.Println("	" + err.Error())
 		return
 	}
-	X.connection = &conn
+	X.connectionConfig = &conn
+	defer conn.Close()
 	response, err := readOnMemoryDefault(&conn)
 	if err != nil {
 		fmt.Println("There was a problem getting the response")
@@ -42,10 +43,6 @@ func main() {
 			continue
 		}
 		command_name := parts[0]
-		if command_name == "exit" {
-			break
-		}
-
 		method := reflect.ValueOf(&X).MethodByName(strings.ToUpper(command_name))
 
 		if !method.IsValid() {
@@ -54,14 +51,12 @@ func main() {
 		}
 		resultCommand := method.Call([]reflect.Value{reflect.ValueOf(strings.TrimSpace(command[len(command_name):]))})
 
-		resultString, _ := resultCommand[0].Interface().(string)
-		
-		if resultCommand[1].IsNil() {
-			fmt.Println("Command Says : \n" + resultString)
-		} else {
+		result, _ := resultCommand[0].Interface().(string)
+
+		if !resultCommand[1].IsNil() {
 			resultError, _ := resultCommand[1].Interface().(error)
 			fmt.Println("Error : " + resultError.Error())
 		}
+		fmt.Println("	Command Says : \n" + result)
 	}
-	defer conn.Close()
 }

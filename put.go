@@ -1,30 +1,44 @@
 package main
 
 import (
-	"errors"
 	"io"
 	"os"
 	"strings"
 )
 
+
+
 func (cs *CommandsStruct) PUT(arg string) (string, error) {
-	if arg[len(arg)-1] == 'A' {
-		return command_store(cs, strings.TrimSpace(arg[:len(arg)-1]), false)
-	} else if arg[len(arg)-1] == 'B' {
-		return command_store(cs, strings.TrimSpace(arg[:len(arg)-1]), true)
-	} else {
-		return "", errors.New("wrong arguments")
+	useUnique := false
+	useBinary := true
+	useAppend := false
+	if strings.HasPrefix(arg, append_flag) {
+		useAppend = true
+		arg = strings.TrimSpace(arg[len(append_flag):])
 	}
+	if strings.HasPrefix(arg, unique_flag) {
+		useUnique = true
+		arg = strings.TrimSpace(arg[len(unique_flag):])
+	}
+	if strings.HasPrefix(arg, binary_flag) {
+		useBinary = true
+		arg = strings.TrimSpace(arg[len(binary_flag):])
+	}
+	if strings.HasPrefix(arg, ascii_flag) {
+		useBinary = false
+		arg = strings.TrimSpace(arg[len(ascii_flag):])
+	}
+	return command_store(cs, strings.TrimSpace(arg), useUnique, useBinary, useAppend)
 }
 
-func command_store(cs *CommandsStruct, filename string, useBinary bool) (string, error) {
+func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return "", err
 	}
 	defer file.Close()
 	if useBinary {
-		_, err := writeAndreadOnMemory(cs.connection, "TYPE I")
+		_, err := cs.TYPE("I")
 		if err != nil {
 			return "", err
 		}
@@ -33,7 +47,14 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 	if err != nil {
 		return "", err
 	}
-	_, err = writeAndreadOnMemory(cs.connection, "STOR "+filename)
+	command := "STOR "
+	if useAppend {
+		command = "APPE "
+	}
+	if useUnique {
+		command = "STOU "
+	}
+	_, err = writeAndreadOnMemory(cs.connectionConfig, command+filename)
 	if err != nil {
 		return "", err
 	}
@@ -52,11 +73,11 @@ func command_store(cs *CommandsStruct, filename string, useBinary bool) (string,
 		}
 	}
 	(*conn_data).Close()
-	result, err := readOnMemoryDefault(cs.connection)
+	result, err := readOnMemoryDefault(cs.connectionConfig)
 	if err != nil {
 		return "", err
 	}
-	_, err = writeAndreadOnMemory(cs.connection, "TYPE A")
+	_, err = cs.TYPE("A")
 	if err != nil {
 		return "", err
 	}
