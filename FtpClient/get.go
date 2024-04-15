@@ -24,29 +24,33 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 	file, _ := os.Create(filename)
 	connData, err := cs.PASV()
 	if err != nil {
+		os.Remove(filename)
 		return "", err
 	}
 	if useBinary {
 		_, err := cs.TYPE("I")
 		if err != nil {
+			os.Remove(filename)
 			return "", err
 		}
 	}
 
 	sizeint, err := cs.SIZE(pathname)
 	if err != nil {
+		os.Remove(filename)
 		return "", err
 	}
 	
 	_, err = writeAndreadOnMemory(cs.connectionConfig, "RETR "+pathname)
 	if err != nil {
+		os.Remove(filename)
 		return "", err
 	}
 
 
 	err = readOnFile(connData, file, sizeint)
 	if err != nil {
-		os.Remove(file.Name())
+		os.Remove(filename)
 		return "", err
 	}
 	// this line made the code work !! .

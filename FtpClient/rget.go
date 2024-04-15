@@ -26,7 +26,7 @@ func (cs *CommandsStruct) rGET(foldername string, path string) (string, error) {
 		}
 	}
 	for _, file := range files {
-		_, err = cs.GET(path + "/" + file + " B")
+		_, err = cs.GET(path + "/" + file)
 				if err != nil {
 					return "", err
 			}

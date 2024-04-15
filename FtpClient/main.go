@@ -53,10 +53,10 @@ func main() {
 
 		result, _ := resultCommand[0].Interface().(string)
 
+		fmt.Println("Command Says : \n" + result)
 		if !resultCommand[1].IsNil() {
 			resultError, _ := resultCommand[1].Interface().(error)
-			fmt.Println("Error : " + resultError.Error())
+			fmt.Println("	Error : " + resultError.Error())
 		}
-		fmt.Println("	Command Says : \n" + result)
 	}
 }
