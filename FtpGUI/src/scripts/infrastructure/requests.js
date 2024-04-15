@@ -5,3 +5,9 @@ export class CreateConnectionRequest {
         this.password = password;
     }
 }
+
+export class ListServerRequest {
+    constructor(path) {
+        this.path = path
+    }
+}

@@ -1,6 +1,4 @@
-import { apiUrl } from "../constants.js"
-import { get, post } from "../communication/httpMethods.js";
-import { CreateConnectionRequest } from "../communication/requests.js";
+import { displayer } from "../constants.js";
 
 export function connectionSetupComponent() {
     const ipAddress = document.querySelector("#ip-address");
@@ -12,34 +10,15 @@ export function connectionSetupComponent() {
     // Create connection event
     let response;
     connectButton.addEventListener("click", async () => {
-        const request = new CreateConnectionRequest(
-            ipAddress.value,
-            userName.value,
-            password.value
-        );
-        response = await post(apiUrl + "connect", request);
-
-        // TODO: Store the response status into the status list
-        // statusList.Push(updates)
-        // Refresh status
-
-        // TODO-PROD: Erase this logging when setting code to production. Just for debugging purposes
-        console.log(response);
-
+        // TODO: Display tree
+        // List root directory
+        displayer.connect(ipAddress.value, userName.value, password.value);
         cleanInputs();
     });
 
     // Close connection event
     closeButton.addEventListener("click", async () => {
-        response = await get(apiUrl + "close");
-
-        // TODO: Store the response status into the status list
-        // statusList.Push(updates)
-        // Refresh status
-
-        // TODO-PROD: Erase this logging when setting code to production. Just for debugging purposes
-        console.log(response);
-
+        displayer.close();
         cleanInputs();
     });
 
