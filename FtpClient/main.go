@@ -30,7 +30,7 @@ func main() {
 	}
 	X.USER(ftptouse.user)
 	X.PASS(ftptouse.password)
-
+	X.SIZE("LICENSE2")
 	fmt.Println(string(response))
 	for {
 		fmt.Print(">> ")

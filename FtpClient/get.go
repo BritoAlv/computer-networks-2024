@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -35,7 +36,7 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 		}
 	}
 
-	sizeint, err := cs.SIZE(pathname)
+	sizeStr, err := cs.SIZE(pathname)
 	if err != nil {
 		os.Remove(filename)
 		return "", err
@@ -47,8 +48,13 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 		return "", err
 	}
 
+	sizeInt, err := strconv.ParseInt(sizeStr, 10, 64)
+	if err != nil {
+		os.Remove(filename)
+		return "", err
+	}
 
-	err = readOnFile(connData, file, sizeint)
+	err = readOnFile(connData, file, sizeInt)
 	if err != nil {
 		os.Remove(filename)
 		return "", err
