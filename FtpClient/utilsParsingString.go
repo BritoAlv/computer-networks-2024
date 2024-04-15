@@ -7,7 +7,6 @@ import (
 )
 
 func parse_get_connection_ftp(input string) (string, string) {
-	// This method is crying for refactoring.
 	// Parse the input string to get the IP and Port
 	// Example: "227 Entering Passive Mode (127,0,0,1,195,149)"
 	// The port is calculated as (195*256+149)

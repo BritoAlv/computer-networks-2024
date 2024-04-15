@@ -8,7 +8,7 @@ func (cs *CommandsStruct) LS(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_, err = writeAndreadOnMemory(cs.connection, "LIST "+ strings.TrimSpace(path))
+	_, err = writeAndreadOnMemory(cs.connectionConfig, "LIST "+ strings.TrimSpace(path))
 	if err != nil {
 		return "", err
 	}
@@ -16,7 +16,7 @@ func (cs *CommandsStruct) LS(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_, err = readOnMemoryDefault(cs.connection)
+	_, err = readOnMemoryDefault(cs.connectionConfig)
 	if err != nil {
 		return "", err
 	}

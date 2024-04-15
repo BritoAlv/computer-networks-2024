@@ -12,7 +12,7 @@ func (cs *CommandsStruct) NLST(input string) (string, error) {
 		return "", passErr
 	}
 
-	_, lisErr := writeAndreadOnMemory(cs.connection, "NLST " + strings.TrimSpace(input))
+	_, lisErr := writeAndreadOnMemory(cs.connectionConfig, "NLST " + strings.TrimSpace(input))
 	if lisErr != nil {
 		return "", lisErr
 	}
@@ -22,7 +22,7 @@ func (cs *CommandsStruct) NLST(input string) (string, error) {
 		return "", dataErr
 	}
 
-	_, doneErr := readOnMemoryDefault(cs.connection)
+	_, doneErr := readOnMemoryDefault(cs.connectionConfig)
 	if doneErr != nil {
 		return "", doneErr
 	}
