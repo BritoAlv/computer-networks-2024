@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="module" src="./scripts/main.js"></script>
+</head>
+<body>
+    <div class="container connection-setup">
+        <div class="ip-address-container">
+            <label>IP Address</label>
+            <input type="text" id="ip-address">
+        </div>
+
+        <div class="user-name-container">
+            <label>User</label>
+            <input type="text" id="user-name">
+        </div>
+
+        <div class="password-container">
+            <label>Password</label>
+            <input type="text" id="password">
+        </div>
+
+        <div class="connect-button-container">
+            <input type="button" value="connect" id="connect-button">
+        </div>
+
+        <div class="close-button-container">
+            <input type="button" value="close" id="close-button">
+        </div>
+    </div>
+
+
+    <div class="container connection-status">
+        <p>
+            Connection status
+        </p>
+    </div>
+
+
+    <div class="container local-directory">
+        <h1>Local directory</h1>
+
+        <ul>
+            <li>file_name</li>
+        </ul>
+
+        <div class="local-button-container">
+            <input type="button" value="upload" id="upload-button">
+        </div>
+    </div>
+
+
+    <div class="container server-directory">
+        <h1>Server directory</h1>
+
+        <ul>
+            <li>file_name</li>
+        </ul>
+
+        <div class="server-button-container">
+            <input type="button" value="Create directory" id="create-directory-button">
+            <input type="button" value="Remove directory" id="remove-directory-button">
+            <input type="button" value="Download directory" id="download-directory-button">
+            <input type="button" value="Download file" id="download-file-button">
+            <input type="button" value="Remove file" id="remove-file-button">
+        </div>
+    </div>
+</body>
+</html>
