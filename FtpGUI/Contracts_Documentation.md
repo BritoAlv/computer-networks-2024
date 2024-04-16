@@ -86,7 +86,8 @@ etc...
 
 ```json
   {
-    "directories": "string of all the directories and files"
+    "directories": "string of all the directories and files",
+    "successful": true
   }
 ```
 

@@ -1,6 +1,6 @@
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
-import { CreateConnectionRequest } from "./requests.js";
+import { CreateConnectionRequest, ListServerRequest } from "./requests.js";
 
 export class Displayer {
     #apiUrl;
@@ -16,20 +16,60 @@ export class Displayer {
     }
 
     async connect(ipAddress, userName, password) {
-        const request = new CreateConnectionRequest(
+        const connectionRequest = new CreateConnectionRequest(
             ipAddress.value,
             userName.value,
             password.value
         );
-        const response = await this.#requester.post(this.#apiUrl + "connect", request);
+        const connectionResponse = await this.#requester.post(this.#apiUrl + "connect", connectionRequest);
 
-        this.#displayStatus(response.status);
+        this.#displayStatus(connectionResponse.status);
+
+        if(!connectionResponse.successful)
+            return;
+
+        // Wait until server is functioning
+        // const listRequest = new ListServerRequest("/");
+        // const listResponse = await this.#requester.post(this.#apiUrl+"list", listRequest);
+
+        // if(!listResponse.successful) {
+        //     this.#displayStatus("Error while listing directory");
+        //     return;
+        // }
+
+        // Mock response
+        const directories = ["Pictures", "Music", "Videos", "Books"];
+        const files = ["main.c", "lib.c", "script.py"];
+
+        const rootId = this.#serverDirectoryTree.root.id;
+
+        // Insert directories into directory tree
+        directories.forEach(dir => {
+            this.#serverDirectoryTree.insertDirectory(rootId, dir);
+        }); 
+    
+        // Insert files into directory tree
+        files.forEach(f => {
+            this.#serverDirectoryTree.insertFile(rootId, f);
+        });
+
+        const serverDirectory = document.querySelector("#server-directory");
+
+        // Display html
+        serverDirectory.innerHTML = this.#serverDirectoryTree.toHtml();
     }
 
     async close() {
         const response = await this.#requester.get(this.#apiUrl + "close");
 
         this.#displayStatus(response.status);
+
+        const serverDirectory = document.querySelector("#server-directory");
+
+        // Reset server directory tree
+        this.#serverDirectoryTree = new DirectoryTree("root");
+        // Reset server directory html
+        serverDirectory.innerHTML = "";
     }
 
     async update() {

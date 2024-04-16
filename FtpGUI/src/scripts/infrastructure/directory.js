@@ -156,11 +156,11 @@ export class DirectoryTree {
 
         if (directory.display)
             directory.files.forEach(f => {
-                files += `<li>${f.path()}</li>`;
+                files += `<li>${f.name}</li>`;
             });
 
         return `
-            <li>${directory.path}</li>
+            <li>${directory.name}</li>
             <ul>
                 ${files}
                 ${directories}
