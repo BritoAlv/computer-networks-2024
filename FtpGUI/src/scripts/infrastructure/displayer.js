@@ -6,12 +6,14 @@ export class Displayer {
     #apiUrl;
     #requester;
     #serverDirectoryTree;
+    #localDirectoryTree;
     #statusList;
 
     constructor(apiUrl) {
         this.#apiUrl = apiUrl;
         this.#requester = new Requester();
         this.#serverDirectoryTree = new DirectoryTree("root");
+        this.#localDirectoryTree = new DirectoryTree("root");
         this.#statusList = [];
     }
 
@@ -28,10 +30,40 @@ export class Displayer {
         if(!connectionResponse.successful)
             return;
 
-        // Wait until server is functioning
-        // const listRequest = new ListServerRequest("/");
-        // const listResponse = await this.#requester.post(this.#apiUrl+"list", listRequest);
+        this.displayServerDirectory()
+    }
 
+    async close() {
+        const response = await this.#requester.get(this.#apiUrl + "close");
+
+        this.#displayStatus(response.status);
+
+        const serverDirectory = document.querySelector("#server-directory");
+
+        // Reset server directory tree
+        this.#serverDirectoryTree = new DirectoryTree("root");
+        // Reset server directory html
+        serverDirectory.innerHTML = "";
+    }
+
+    async update() {
+        const response = await this.#requester.get(this.#apiUrl + "status");
+
+        if (response.status == "")
+            return;
+
+        this.#displayStatus(response.status);
+    }
+
+    async displayServerDirectory(directoryId = undefined) {
+        if(directoryId == undefined)
+            directoryId = this.#serverDirectoryTree.root.id;
+
+        const path = this.#serverDirectoryTree.findDirectory(directoryId).path;
+
+        // Wait until server is functioning
+        // const listRequest = new ListServerRequest(path);
+        // const listResponse = await this.#requester.post(this.#apiUrl+"list/server", listRequest);
         // if(!listResponse.successful) {
         //     this.#displayStatus("Error while listing directory");
         //     return;
@@ -59,26 +91,41 @@ export class Displayer {
         serverDirectory.innerHTML = this.#serverDirectoryTree.toHtml();
     }
 
-    async close() {
-        const response = await this.#requester.get(this.#apiUrl + "close");
+    async displayLocalDirectory(directoryId = undefined) {
+        if(directoryId == undefined)
+            directoryId = this.#localDirectoryTree.root.id;
 
-        this.#displayStatus(response.status);
+        const path = this.#localDirectoryTree.findDirectory(directoryId).path;
 
-        const serverDirectory = document.querySelector("#server-directory");
+        // Wait until server is functioning
+        // const listRequest = new ListServerRequest(path);
+        // const listResponse = await this.#requester.post(this.#apiUrl+"list/local", listRequest);
 
-        // Reset server directory tree
-        this.#serverDirectoryTree = new DirectoryTree("root");
-        // Reset server directory html
-        serverDirectory.innerHTML = "";
-    }
+        // if(!listResponse.successful) {
+        //     this.#displayStatus("Error while listing directory");
+        //     return;
+        // }
 
-    async update() {
-        const response = await this.#requester.get(this.#apiUrl + "status");
+        // Mock response
+        const directories = ["Movies", "Lectures", "Projects"];
+        const files = ["pic.jpeg", "music.mp3"];
 
-        if (response.status == "")
-            return;
+        const rootId = this.#localDirectoryTree.root.id;
 
-        this.#displayStatus(response.status);
+        // Insert directories into directory tree
+        directories.forEach(dir => {
+            this.#localDirectoryTree.insertDirectory(rootId, dir);
+        }); 
+    
+        // Insert files into directory tree
+        files.forEach(f => {
+            this.#localDirectoryTree.insertFile(rootId, f);
+        });
+
+        const localDirectory = document.querySelector("#local-directory");
+
+        // Display html
+        localDirectory.innerHTML = this.#localDirectoryTree.toHtml();
     }
 
     #displayStatus(status) {
