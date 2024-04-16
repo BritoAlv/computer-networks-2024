@@ -1,3 +1,4 @@
+import { selected } from "../globals.js";
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
 import { CreateConnectionRequest, ListServerRequest, UploadRequest } from "./requests.js";
@@ -19,9 +20,9 @@ export class Displayer {
 
     async connect(ipAddress, userName, password) {
         const connectionRequest = new CreateConnectionRequest(
-            ipAddress.value,
-            userName.value,
-            password.value
+            ipAddress,
+            userName,
+            password
         );
         const connectionResponse = await this.#requester.post(this.#apiUrl + "connect", connectionRequest);
 
@@ -44,6 +45,12 @@ export class Displayer {
         this.#serverDirectoryTree = new DirectoryTree("root");
         // Reset server directory html
         serverDirectory.innerHTML = "";
+
+        // Reset selected items
+        selected.localFile = undefined;
+        selected.localDirectory = undefined;
+        selected.serverFile = undefined;
+        selected.serverDirectory = undefined;
     }
 
     async update() {
@@ -89,6 +96,8 @@ export class Displayer {
 
         // Display html
         serverDirectory.innerHTML = this.#serverDirectoryTree.toHtml();
+
+        this.#setServerDirectoryEvents(false);
     }
 
     async displayLocalDirectory(directoryId = undefined) {
@@ -126,17 +135,36 @@ export class Displayer {
 
         // Display html
         localDirectory.innerHTML = this.#localDirectoryTree.toHtml();
+
+        this.#setLocalDirectoryEvents();
     }
 
-    async uploadFile(fileId) {
-        if(fileId == undefined) {
-            this.#displayStatus("Error while uploading file. Must select one in order to upload");
+    async uploadFile() {
+        if (selected.localFile == undefined || selected.serverDirectory == undefined) {
+            this.#displayStatus("Error while uploading file. Must select a file and a destination directory in order to upload.");
             return;
         }
 
-        const path = this.#localDirectoryTree.findFile(fileId).path();
-        const request = new UploadRequest(path);
+        const source = this.#localDirectoryTree.findFile(selected.localFile.substr(1)).path();
+        const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
+
+        const request = new UploadRequest(source, destination);
         const response = await this.#requester.post(this.#apiUrl + "uploads/file", request);
+
+        this.#displayStatus(response.status);
+    }
+
+    async uploadDirectory() {
+        if (selected.localDirectory == undefined || selected.serverDirectory == undefined) {
+            this.#displayStatus("Error while uploading file. Must select a source and destination directory in order to upload.");
+            return;
+        }
+
+        const source = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
+        const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
+
+        const request = new UploadRequest(source, destination);
+        const response = await this.#requester.post(this.#apiUrl + "uploads/directory", request);
 
         this.#displayStatus(response.status);
     }
@@ -150,5 +178,69 @@ export class Displayer {
             data += `<li>${s}</li>`
         });
         statusContainer.innerHTML = data;
+    }
+
+    #setLocalDirectoryEvents() {
+        const fileItems = document.querySelectorAll(`#local-directory .file-item`);
+        const directoryItems = document.querySelectorAll("#local-directory .directory-item");
+        fileItems.forEach(item => {
+            item.addEventListener("click", () => {
+
+                // Remove select-file class from previously selected file
+                if (selected.localFile != undefined) {
+                    const previouslySelected = document.querySelector(`#${selected.localFile}`);
+                    previouslySelected.className = `file-item`;
+                }
+
+                selected.localFile = item.id;
+                item.className += " selected-file";
+            });
+        });
+
+        directoryItems.forEach(item => {
+            item.addEventListener("click", () => {
+
+                // Remove select-directory class from previously selected directory
+                if (selected.localDirectory != undefined) {
+                    const previouslySelected = document.querySelector(`#${selected.localDirectory}`);
+                    previouslySelected.className = "directory-item";
+                }
+
+                selected.localDirectory = item.id;
+                item.className += " selected-directory";
+            });
+        });
+    }
+
+    #setServerDirectoryEvents() {
+        const fileItems = document.querySelectorAll(`#server-directory .file-item`);
+        const directoryItems = document.querySelectorAll("#server-directory .directory-item");
+        fileItems.forEach(item => {
+            item.addEventListener("click", () => {
+
+                // Remove select-file class from previously selected file
+                if (selected.serverFile != undefined) {
+                    const previouslySelected = document.querySelector(`#${selected.serverFile}`);
+                    previouslySelected.className = `file-item`;
+                }
+
+                selected.serverFile = item.id;
+                item.className += " selected-file";
+            });
+        });
+
+        directoryItems.forEach(item => {
+            item.addEventListener("click", () => {
+
+                // Remove select-directory class from previously selected directory
+                if (selected.serverDirectory != undefined) {
+                    const previouslySelected = document.querySelector(`#${selected.serverDirectory}`);
+                    previouslySelected.className = "directory-item";
+                }
+
+                selected.serverDirectory = item.id;
+                item.className += " selected-directory";
+            });
+        });
     }
 }

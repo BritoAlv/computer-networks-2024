@@ -8,10 +8,7 @@ export function connectionSetupComponent() {
     const connectButton = document.querySelector("#connect-button");
 
     // Create connection event
-    let response;
     connectButton.addEventListener("click", async () => {
-        // TODO: Display tree
-        // List root directory
         displayer.connect(ipAddress.value, userName.value, password.value);
         cleanInputs();
     });

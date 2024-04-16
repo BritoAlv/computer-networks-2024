@@ -112,7 +112,8 @@ Endpoint para listar un directorio del servidor
 
 ```json
 {
-  "path": "music.mp3",
+  "source": "/Music/music.mp3",
+  "destination": "/Data/"
 }
 ```
 
@@ -125,13 +126,21 @@ Endpoint para listar un directorio del servidor
 }
 ```
 
+```json
+{
+  "status": "Error while uploading file",
+  "successful": false
+}
+```
+
 ## POST url/uploads/directory
 
 ### Request
 
 ```json
 {
-  "path": "music.mp3",
+  "source": "/Music/",
+  "destination": "/Data/"
 }
 ```
 

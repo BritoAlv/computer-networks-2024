@@ -13,7 +13,8 @@ export class ListServerRequest {
 }
 
 export class UploadRequest {
-    constructor(path) {
-        this.path = path;
+    constructor(source, destination) {
+        this.source = source;
+        this.destination = destination;
     }
 };
