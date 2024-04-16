@@ -36,6 +36,14 @@ export class DirectoryTree {
         return result;
     }
 
+    findFile(fileId) {
+        const result = this.#findFile(this.root, fileId);
+        if (result == null)
+            throw new Error("File id was not found");
+
+        return result;
+    }
+
     insertFile(directoryId, fileName) {
         if (!this.#insertFile(this.root, directoryId, fileName))
             throw new Error("Directory id was not found");
@@ -66,13 +74,28 @@ export class DirectoryTree {
         }
         else {
             for (const dir of directory.directories) {
-                const result = this.#findDirectory(dir, directoryId)
+                const result = this.#findDirectory(dir, directoryId);
                 if (result != null)
                     return result;
             }
 
             return null;
         }
+    }
+
+    #findFile(directory, fileId) {
+        const file = directory.files.filter(f => f.id == fileId)[0];
+
+        if(file != undefined)
+            return file;
+
+        for (const dir in directory.directories) {
+            const result = this.#findFile(dir, fileId);
+            if(result != null)
+                return result;
+        }
+
+        return null;
     }
 
     #insertFile(directory, directoryId, fileName) {
@@ -156,11 +179,11 @@ export class DirectoryTree {
 
         if (directory.display)
             directory.files.forEach(f => {
-                files += `<li>${f.name}</li>`;
+                files += `<li class="file-item" id="i${f.id}">${f.name}</li>`;
             });
 
         return `
-            <li>${directory.name}</li>
+            <li class="directory-item" id="i${directory.id}">${directory.name}</li>
             <ul>
                 ${files}
                 ${directories}
