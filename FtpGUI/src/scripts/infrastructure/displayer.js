@@ -66,7 +66,8 @@ export class Displayer {
         if (directoryId == undefined)
             directoryId = this.#serverDirectoryTree.root.id;
 
-        const path = this.#serverDirectoryTree.findDirectory(directoryId).path;
+        const directory = this.#serverDirectoryTree.findDirectory(directoryId);
+        const path = directory.path;
 
         // Wait until server is functioning
         // const listRequest = new ListServerRequest(path);
@@ -80,16 +81,16 @@ export class Displayer {
         const directories = ["Pictures", "Music", "Videos", "Books"];
         const files = ["main.c", "lib.c", "script.py"];
 
-        const rootId = this.#serverDirectoryTree.root.id;
-
         // Insert directories into directory tree
         directories.forEach(dir => {
-            this.#serverDirectoryTree.insertDirectory(rootId, dir);
+            if (!directory.directories.map(d => d.name).includes(dir))
+                this.#serverDirectoryTree.insertDirectory(directoryId, dir);
         });
 
         // Insert files into directory tree
         files.forEach(f => {
-            this.#serverDirectoryTree.insertFile(rootId, f);
+            if (!directory.files.map(fp => fp.name).includes(f))
+                this.#serverDirectoryTree.insertFile(directoryId, f);
         });
 
         const serverDirectory = document.querySelector("#server-directory");
@@ -104,7 +105,8 @@ export class Displayer {
         if (directoryId == undefined)
             directoryId = this.#localDirectoryTree.root.id;
 
-        const path = this.#localDirectoryTree.findDirectory(directoryId).path;
+        const directory = this.#localDirectoryTree.findDirectory(directoryId);
+        const path = directory.path;
 
         // Wait until server is functioning
         // const listRequest = new ListServerRequest(path);
@@ -119,16 +121,16 @@ export class Displayer {
         const directories = ["Movies", "Lectures", "Projects"];
         const files = ["pic.jpeg", "music.mp3"];
 
-        const rootId = this.#localDirectoryTree.root.id;
-
         // Insert directories into directory tree
         directories.forEach(dir => {
-            this.#localDirectoryTree.insertDirectory(rootId, dir);
+            if (!directory.directories.map(d => d.name).includes(dir))
+                this.#localDirectoryTree.insertDirectory(directoryId, dir);
         });
 
         // Insert files into directory tree
         files.forEach(f => {
-            this.#localDirectoryTree.insertFile(rootId, f);
+            if (!directory.files.map(fp => fp.name).includes(f))
+                this.#localDirectoryTree.insertFile(directoryId, f);
         });
 
         const localDirectory = document.querySelector("#local-directory");
