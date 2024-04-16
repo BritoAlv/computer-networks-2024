@@ -7,22 +7,21 @@ import (
 func (cs *CommandsStruct) NLST(input string) (string, error) {
 
 	// Enter Passive Mode
-	connData, passErr := cs.PASV()
-	if passErr != nil {
-		return "", passErr
+	err := cs.check_connection()
+	if err != nil {
+		return "", err
 	}
-
-	_, lisErr := writeAndreadOnMemory(cs.connectionConfig, "NLST " + strings.TrimSpace(input))
+	_, lisErr := writeAndreadOnMemory(cs, "NLST " + strings.TrimSpace(input))
 	if lisErr != nil {
 		return "", lisErr
 	}
 
-	data, dataErr := readOnMemoryPassive(connData)
+	data, dataErr := readOnMemoryPassive(cs.connectionData)
 	if dataErr != nil {
 		return "", dataErr
 	}
 
-	_, doneErr := readOnMemoryDefault(cs.connectionConfig)
+	_, doneErr := readOnMemoryDefault(cs)
 	if doneErr != nil {
 		return "", doneErr
 	}

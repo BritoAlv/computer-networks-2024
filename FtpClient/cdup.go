@@ -2,5 +2,5 @@ package main
 
 
 func (cs *CommandsStruct) CDUP(args string) (string, error) {
-	return writeAndreadOnMemory(cs.connectionConfig, "CDUP ")
+	return writeAndreadOnMemory(cs, "CDUP ")
 }

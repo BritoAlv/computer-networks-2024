@@ -1,17 +1,24 @@
 package main
 
 import (
-	"net"
+	"errors"
+	"strings"
 )
 
-func (cs *CommandsStruct) PASV() (*net.Conn, error) {
-	data, err := writeAndreadOnMemory(cs.connectionConfig, "PASV ")
-	if err != nil{
-		return nil, err
-	}
-	connData, err := open_conection(data)
+func (cs *CommandsStruct) PASV() error {
+	data, err := writeAndreadOnMemory(cs, "PASV ")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &connData, nil
+	if strings.HasPrefix(data, "227") {
+		connData, err := open_conection(data)
+		if err != nil {
+			return err
+		}
+		cs.connectionData = &connData
+		return nil
+	} else {
+		return errors.New("PASV got wrong response : " + data)
+	}
+
 }

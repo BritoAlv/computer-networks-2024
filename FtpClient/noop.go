@@ -1,5 +1,5 @@
 package main
 
 func (cs *CommandsStruct) NOOP(args string) (string, error) {
-	return writeAndreadOnMemory(cs.connectionConfig, "NOOP")
+	return writeAndreadOnMemory(cs, "NOOP")
 }

@@ -23,9 +23,8 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 	parts := strings.Split(pathname, "/")
 	filename := parts[len(parts)-1]
 	file, _ := os.Create(filename)
-	connData, err := cs.PASV()
+	err := cs.check_connection()
 	if err != nil {
-		os.Remove(filename)
 		return "", err
 	}
 	if useBinary {
@@ -42,7 +41,7 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 		return "", err
 	}
 	
-	_, err = writeAndreadOnMemory(cs.connectionConfig, "RETR "+pathname)
+	_, err = writeAndreadOnMemory(cs, "RETR "+pathname)
 	if err != nil {
 		os.Remove(filename)
 		return "", err
@@ -54,14 +53,14 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 		return "", err
 	}
 
-	err = readOnFile(connData, file, sizeInt)
+	err = readOnFile(cs.connectionData, file, sizeInt)
 	if err != nil {
 		os.Remove(filename)
 		return "", err
 	}
 	// this line made the code work !! .
-	(*connData).Close()
-	result, err := readOnMemoryDefault(cs.connectionConfig)
+	defer cs.release_connection()
+	result, err := readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err
 	}

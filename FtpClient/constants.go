@@ -1,7 +1,7 @@
 package main
 
 
-const max_size = 32768
+const max_size = 512
 const timeout = 20
 const no_size = -1
 

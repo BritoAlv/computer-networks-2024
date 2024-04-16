@@ -43,7 +43,7 @@ func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinar
 			return "", err
 		}
 	}
-	conn_data, err := cs.PASV()
+	err = cs.check_connection()
 	if err != nil {
 		return "", err
 	}
@@ -54,7 +54,7 @@ func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinar
 	if useUnique {
 		command = "STOU "
 	}
-	_, err = writeAndreadOnMemory(cs.connectionConfig, command+filename)
+	_, err = writeAndreadOnMemory(cs, command+filename)
 	if err != nil {
 		return "", err
 	}
@@ -67,13 +67,13 @@ func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinar
 			}
 			break
 		}
-		_, err = writeonMemoryPassive(conn_data, buffer[:bytesRead])
+		_, err = writeonMemoryPassive(cs.connectionData, buffer[:bytesRead])
 		if err != nil {
 			return "", err
 		}
 	}
-	(*conn_data).Close()
-	result, err := readOnMemoryDefault(cs.connectionConfig)
+	defer cs.release_connection()
+	result, err := readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err
 	}

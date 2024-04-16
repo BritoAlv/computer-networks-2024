@@ -1,5 +1,5 @@
 package main
 
 func (cs *CommandsStruct) SYST(arg string) (string, error) {
-	return writeAndreadOnMemory(cs.connectionConfig, "SYST ") 
+	return writeAndreadOnMemory(cs, "SYST ") 
 }

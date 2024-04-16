@@ -18,13 +18,13 @@ func open_conection(connDataConfig string) (net.Conn, error) {
 	return connData, nil
 }
 
-func writeonMemoryDefault(connData *net.Conn, dataS string) (int, error) {
+func writeonMemoryDefault(cs *CommandsStruct, dataS string) (int, error) {
 	data := []byte(dataS)
 	pr := 0
 	for {
-		(*connData).SetWriteDeadline(time.Now().Add(timeout * time.Second))
+		(*cs.connectionConfig).SetWriteDeadline(time.Now().Add(timeout * time.Second))
 		size_to_write := min(max_size, len(data)-pr)
-		n, err := (*connData).Write(data[pr : pr+size_to_write])
+		n, err := (*cs.connectionConfig).Write(data[pr : pr+size_to_write])
 		if err != nil {
 			return pr, nil
 		}
@@ -76,32 +76,33 @@ func readOnMemoryPassive(connData *net.Conn) (string, error) {
 	return string(data), nil
 }
 
-func readOnMemoryDefault(connData *net.Conn) (string, error) {
-	tmp := make([]byte, max_size)
-	data := make([]byte, 0)
-	(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
-	n, err := (*connData).Read(tmp)
+func getResponse(cs *CommandsStruct) (string, error) {
+	result := cs.queueResponses.Dequeue()
+	respCode := result[:3]
+	err := CheckResponseNumber(respCode)
 	if err != nil {
 		return "", err
 	}
-	data = append(data, tmp[:n]...)
-	response := string(data)
-	responseCode := response[:3]
-	err = CheckResponseNumber(responseCode)
-	if err != nil {
-		return response, err
-	}
-	if len(response) > 3 && response[3] == '-' {
-		/*
-			we are in presence of a multiline response, due to
-			bad connections may be the case it is not fully read still.
-			RFC 959.
-		*/
+	return result, nil
+}
+
+func readOnMemoryDefault(cs *CommandsStruct) (string, error) {
+	cs.muRead.Lock()
+	defer cs.muRead.Unlock()
+	if cs.queueResponses.list.Len() == 0 {
+		tmp := make([]byte, max_size)
+		data := make([]byte, 0)
+		(*cs.connectionConfig).SetReadDeadline(time.Now().Add(timeout * time.Second))
+		n, err := (*cs.connectionConfig).Read(tmp)
+		if err != nil {
+			return "", err
+		}
+		data = append(data, tmp[:n]...)
 		dataStr := string(data)
 		lines := SplitString(dataStr, '\n')
-		for !strings.HasPrefix(lines[len(lines)-1], responseCode+" ") {
-			(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
-			n, err := (*connData).Read(tmp)
+		for lines[len(lines)-1][3] != ' ' {
+			(*cs.connectionConfig).SetReadDeadline(time.Now().Add(timeout * time.Second))
+			n, err := (*cs.connectionConfig).Read(tmp)
 			if err != nil {
 				return "", err
 			}
@@ -109,18 +110,24 @@ func readOnMemoryDefault(connData *net.Conn) (string, error) {
 			dataStr := string(data)
 			lines = SplitString(dataStr, '\n')
 		}
+		start := 0
+		for index, line := range lines {
+			if len(line) > 3 && line[3] == ' ' {
+				cs.queueResponses.Enqueue( strings.Join(lines[start : index+1], "\n"))
+				start = index+1
+			}
+		}
 	}
-
-	return string(data), nil
+	return getResponse(cs)
 }
 
-func writeAndreadOnMemory(connData *net.Conn, data string) (string, error) {
+func writeAndreadOnMemory(cs *CommandsStruct, data string) (string, error) {
 	data += "\r\n"
-	_, err := writeonMemoryDefault(connData, data)
+	_, err := writeonMemoryDefault(cs, data)
 	if err != nil {
 		return "", err
 	}
-	return readOnMemoryDefault(connData)
+	return readOnMemoryDefault(cs)
 }
 
 func readOnFile(connData *net.Conn, file *os.File, size int64) error {
