@@ -99,7 +99,7 @@ func readOnMemoryDefault(connData *net.Conn) (string, error) {
 		*/
 		dataStr := string(data)
 		lines := SplitString(dataStr, '\n')
-		for ; !strings.HasPrefix(lines[len(lines)-1], responseCode+" ") ;  {
+		for !strings.HasPrefix(lines[len(lines)-1], responseCode+" ") {
 			(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
 			n, err := (*connData).Read(tmp)
 			if err != nil {
@@ -126,14 +126,29 @@ func writeAndreadOnMemory(connData *net.Conn, data string) (string, error) {
 func readOnFile(connData *net.Conn, file *os.File, size int64) error {
 	offset := int64(0)
 	tmp := make([]byte, max_size)
-	for offset != size {
-		(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
-		n, err := (*connData).Read(tmp)
-		if err != nil {
-			continue
+	if size == no_size {
+		for {
+			(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
+			n, err := (*connData).Read(tmp)
+			if err != nil {
+				if err != io.EOF {
+					return err
+				}
+				break
+			}
+			file.WriteAt(tmp[:n], offset)
+			offset += int64(n)
 		}
-		file.WriteAt(tmp[:n], offset)
-		offset += int64(n)
+	} else {
+		for offset != size {
+			(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
+			n, err := (*connData).Read(tmp)
+			if err != nil {
+				continue
+			}
+			file.WriteAt(tmp[:n], offset)
+			offset += int64(n)
+		}
 	}
 	return nil
 }

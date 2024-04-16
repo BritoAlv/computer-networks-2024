@@ -29,9 +29,6 @@ func main() {
 		return
 	}
 	fmt.Println(string(response))
-	X.USER("ftp")
-	X.PASS("a@a")
-	X.HELP("")
 	for {
 		fmt.Print(">> ")
 		reader := bufio.NewReader(os.Stdin)

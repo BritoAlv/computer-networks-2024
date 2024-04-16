@@ -3,6 +3,7 @@ package main
 
 const max_size = 32768
 const timeout = 20
+const no_size = -1
 
 const append_flag = "--append"
 const unique_flag = "--unique"
