@@ -6,6 +6,24 @@ import (
 	"strings"
 )
 
+func SplitString(s string, c byte) ([]string){
+	res := make([]string, 0)
+	for i := 0; i < len(s); i++ {
+		if s[i] != c {
+			start := i
+			j := i+1
+			for ; j < len(s); j++ {
+				if s[j] == c {
+					break
+				}
+			}
+			res = append(res, s[start : j])
+			i = j
+		}
+	}
+	return res
+}
+
 func parse_get_connection_ftp(input string) (string, string) {
 	// Parse the input string to get the IP and Port
 	// Example: "227 Entering Passive Mode (127,0,0,1,195,149)"

@@ -1,8 +1,8 @@
 package main
 
 
-const max_size = 8192
-const timeout = 10
+const max_size = 32768
+const timeout = 20
 
 const append_flag = "--append"
 const unique_flag = "--unique"

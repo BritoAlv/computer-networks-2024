@@ -28,3 +28,17 @@ var Phone FTPExample = FTPExample{
 	password : "android",
 }
 
+var Rebex FTPExample = FTPExample{
+	ip : "194.108.117.16",
+	port : "21",
+	user : "demo",
+	password : "password",
+}
+
+var Scene FTPExample = FTPExample{
+	ip : "145.24.145.107",
+	port : "21",
+	user : "ftp",
+	password: "email@example.com",
+}
+

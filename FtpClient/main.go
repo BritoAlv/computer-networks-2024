@@ -12,7 +12,7 @@ import (
 func main() {
 	var X CommandsStruct
 
-	ftptouse := Local
+	ftptouse := Scene
 
 	conn, err := net.Dial("tcp", strings.TrimSpace(ftptouse.ip)+":"+strings.TrimSpace(ftptouse.port))
 	if err != nil {
@@ -28,10 +28,10 @@ func main() {
 		fmt.Println("	" + err.Error())
 		return
 	}
-	X.USER(ftptouse.user)
-	X.PASS(ftptouse.password)
-	X.SIZE("LICENSE2")
 	fmt.Println(string(response))
+	X.USER("ftp")
+	X.PASS("a@a")
+	X.HELP("")
 	for {
 		fmt.Print(">> ")
 		reader := bufio.NewReader(os.Stdin)

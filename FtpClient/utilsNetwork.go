@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -38,7 +39,7 @@ func writeonMemoryDefault(connData *net.Conn, dataS string) (int, error) {
 	return pr, nil
 }
 
-func writeonMemoryPassive(connData *net.Conn, data []byte ) (int, error) {
+func writeonMemoryPassive(connData *net.Conn, data []byte) (int, error) {
 	pr := 0
 	for {
 		(*connData).SetWriteDeadline(time.Now().Add(timeout * time.Second))
@@ -77,17 +78,40 @@ func readOnMemoryPassive(connData *net.Conn) (string, error) {
 
 func readOnMemoryDefault(connData *net.Conn) (string, error) {
 	tmp := make([]byte, max_size)
+	data := make([]byte, 0)
 	(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
 	n, err := (*connData).Read(tmp)
 	if err != nil {
 		return "", err
 	}
-	response := string(tmp[:n])
-	err = CheckResponseNumber(response[:3])
+	data = append(data, tmp[:n]...)
+	response := string(data)
+	responseCode := response[:3]
+	err = CheckResponseNumber(responseCode)
 	if err != nil {
 		return response, err
 	}
-	return string(tmp[:n]), nil
+	if len(response) > 3 && response[3] == '-' {
+		/*
+			we are in presence of a multiline response, due to
+			bad connections may be the case it is not fully read still.
+			RFC 959.
+		*/
+		dataStr := string(data)
+		lines := SplitString(dataStr, '\n')
+		for ; !strings.HasPrefix(lines[len(lines)-1], responseCode+" ") ;  {
+			(*connData).SetReadDeadline(time.Now().Add(timeout * time.Second))
+			n, err := (*connData).Read(tmp)
+			if err != nil {
+				return "", err
+			}
+			data = append(data, tmp[:n]...)
+			dataStr := string(data)
+			lines = SplitString(dataStr, '\n')
+		}
+	}
+
+	return string(data), nil
 }
 
 func writeAndreadOnMemory(connData *net.Conn, data string) (string, error) {
@@ -114,7 +138,7 @@ func readOnFile(connData *net.Conn, file *os.File, size int64) error {
 	return nil
 }
 
-func CheckResponseNumber(code string) (error) {
+func CheckResponseNumber(code string) error {
 	message, exists := FTPErrorMessages[code]
 	if !exists {
 		return errors.New("La response " + code + " n'est pas reconnue.")

@@ -13,7 +13,7 @@ func RMD_Recursive(cs *CommandsStruct, directory string) (string, error) {
 	}
 
 	for i := 0; i < len(files); i++ {
-		_, err := writeAndreadOnMemory(cs.connectionConfig, "DELE "+directory+"/"+files[i]+"\r\n")
+		_, err := writeAndreadOnMemory(cs.connectionConfig, "DELE "+directory+"/"+files[i])
 		if err != nil {
 			return "", err
 		}
