@@ -12,7 +12,7 @@ export class ListServerRequest {
     }
 }
 
-export class UploadRequest {
+export class TransferRequest {
     constructor(source, destination) {
         this.source = source;
         this.destination = destination;

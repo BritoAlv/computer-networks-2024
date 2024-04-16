@@ -1,7 +1,7 @@
 import { selected } from "../globals.js";
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
-import { CreateConnectionRequest, ListServerRequest, UploadRequest } from "./requests.js";
+import { CreateConnectionRequest, ListServerRequest, TransferRequest } from "./requests.js";
 
 export class Displayer {
     #apiUrl;
@@ -143,30 +143,60 @@ export class Displayer {
 
     async uploadFile() {
         if (selected.localFile == undefined || selected.serverDirectory == undefined) {
-            this.#displayStatus("Error while uploading file. Must select a file and a destination directory in order to upload.");
+            this.#displayStatus("Error while uploading file. Must select a file and a destination directory in order to upload");
             return;
         }
 
         const source = this.#localDirectoryTree.findFile(selected.localFile.substr(1)).path();
         const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
 
-        const request = new UploadRequest(source, destination);
-        const response = await this.#requester.post(this.#apiUrl + "uploads/file", request);
+        const request = new TransferRequest(source, destination);
+        const response = await this.#requester.post(this.#apiUrl + "files/upload", request);
 
         this.#displayStatus(response.status);
     }
 
     async uploadDirectory() {
         if (selected.localDirectory == undefined || selected.serverDirectory == undefined) {
-            this.#displayStatus("Error while uploading file. Must select a source and destination directory in order to upload.");
+            this.#displayStatus("Error while uploading file. Must select a source and destination directory in order to upload");
             return;
         }
 
         const source = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
         const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
 
-        const request = new UploadRequest(source, destination);
-        const response = await this.#requester.post(this.#apiUrl + "uploads/directory", request);
+        const request = new TransferRequest(source, destination);
+        const response = await this.#requester.post(this.#apiUrl + "directories/upload", request);
+
+        this.#displayStatus(response.status);
+    }
+
+    async downloadFile() {
+        if (selected.localDirectory == undefined || selected.serverFile == undefined) {
+            this.#displayStatus("Error while uploading file. Must select a file and a destination directory in order to download");
+            return;
+        }
+
+        const source = this.#serverDirectoryTree.findFile(selected.serverFile.substr(1)).path();
+        const destination = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
+
+        const request = new TransferRequest(source, destination);
+        const response = await this.#requester.post(this.#apiUrl + "files/download", request);
+
+        this.#displayStatus(response.status);
+    }
+
+    async downloadDirectory() {
+        if (selected.localDirectory == undefined || selected.serverDirectory == undefined) {
+            this.#displayStatus("Error while uploading file. Must select a source and destination directory in order to download");
+            return;
+        }
+
+        const source = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
+        const destination = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
+
+        const request = new TransferRequest(source, destination);
+        const response = await this.#requester.post(this.#apiUrl + "directories/download", request);
 
         this.#displayStatus(response.status);
     }
