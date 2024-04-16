@@ -1,4 +1,4 @@
-import { displayer } from "../constants.js";
+import { displayer } from "../globals.js";
 
 export function connectionSetupComponent() {
     const ipAddress = document.querySelector("#ip-address");

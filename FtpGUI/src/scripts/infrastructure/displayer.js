@@ -1,6 +1,6 @@
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
-import { CreateConnectionRequest, ListServerRequest } from "./requests.js";
+import { CreateConnectionRequest, ListServerRequest, UploadRequest } from "./requests.js";
 
 export class Displayer {
     #apiUrl;
@@ -27,7 +27,7 @@ export class Displayer {
 
         this.#displayStatus(connectionResponse.status);
 
-        if(!connectionResponse.successful)
+        if (!connectionResponse.successful)
             return;
 
         this.displayServerDirectory()
@@ -56,7 +56,7 @@ export class Displayer {
     }
 
     async displayServerDirectory(directoryId = undefined) {
-        if(directoryId == undefined)
+        if (directoryId == undefined)
             directoryId = this.#serverDirectoryTree.root.id;
 
         const path = this.#serverDirectoryTree.findDirectory(directoryId).path;
@@ -78,8 +78,8 @@ export class Displayer {
         // Insert directories into directory tree
         directories.forEach(dir => {
             this.#serverDirectoryTree.insertDirectory(rootId, dir);
-        }); 
-    
+        });
+
         // Insert files into directory tree
         files.forEach(f => {
             this.#serverDirectoryTree.insertFile(rootId, f);
@@ -92,7 +92,7 @@ export class Displayer {
     }
 
     async displayLocalDirectory(directoryId = undefined) {
-        if(directoryId == undefined)
+        if (directoryId == undefined)
             directoryId = this.#localDirectoryTree.root.id;
 
         const path = this.#localDirectoryTree.findDirectory(directoryId).path;
@@ -115,8 +115,8 @@ export class Displayer {
         // Insert directories into directory tree
         directories.forEach(dir => {
             this.#localDirectoryTree.insertDirectory(rootId, dir);
-        }); 
-    
+        });
+
         // Insert files into directory tree
         files.forEach(f => {
             this.#localDirectoryTree.insertFile(rootId, f);
@@ -126,6 +126,19 @@ export class Displayer {
 
         // Display html
         localDirectory.innerHTML = this.#localDirectoryTree.toHtml();
+    }
+
+    async uploadFile(fileId) {
+        if(fileId == undefined) {
+            this.#displayStatus("Error while uploading file. Must select one in order to upload");
+            return;
+        }
+
+        const path = this.#localDirectoryTree.findFile(fileId).path();
+        const request = new UploadRequest(path);
+        const response = await this.#requester.post(this.#apiUrl + "uploads/file", request);
+
+        this.#displayStatus(response.status);
     }
 
     #displayStatus(status) {

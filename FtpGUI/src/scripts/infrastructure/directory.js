@@ -86,12 +86,12 @@ export class DirectoryTree {
     #findFile(directory, fileId) {
         const file = directory.files.filter(f => f.id == fileId)[0];
 
-        if(file != undefined)
+        if (file != undefined)
             return file;
 
-        for (const dir in directory.directories) {
+        for (const dir of directory.directories) {
             const result = this.#findFile(dir, fileId);
-            if(result != null)
+            if (result != null)
                 return result;
         }
 
@@ -179,9 +179,11 @@ export class DirectoryTree {
 
         if (directory.display)
             directory.files.forEach(f => {
+                // Add i to id to make it a valid one
                 files += `<li class="file-item" id="i${f.id}">${f.name}</li>`;
             });
 
+        // Add i to id to make it a valid one
         return `
             <li class="directory-item" id="i${directory.id}">${directory.name}</li>
             <ul>

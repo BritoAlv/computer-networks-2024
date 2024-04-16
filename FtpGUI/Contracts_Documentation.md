@@ -72,7 +72,21 @@ Endpoint para manejar el estado de las operaciones realizadas sobre el servidor.
 
 etc...
 
-## POST url/list 
+## GET url/list/local
+
+Endpoint para listar el directorio local
+
+### Request
+
+```json
+{
+  "path": "/"
+}
+```
+
+## POST url/list/server
+
+Endpoint para listar un directorio del servidor
 
 ### Request
 
@@ -81,6 +95,7 @@ etc...
     "path": "./Music"
   }
 ```
+
 
 ### Response 
 
@@ -91,7 +106,7 @@ etc...
   }
 ```
 
-## POST url/files/upload
+## POST url/uploads/file
 
 ### Request
 
@@ -110,9 +125,28 @@ etc...
 }
 ```
 
+## POST url/uploads/directory
+
+### Request
+
 ```json
 {
-  "status": "Error while uploading file",
+  "path": "music.mp3",
+}
+```
+
+### Response
+
+```json
+{
+  "status": "Start uploading directory",
+  "successful": true
+}
+```
+
+```json
+{
+  "status": "Error while uploading directory",
   "successful": false
 }
 ```

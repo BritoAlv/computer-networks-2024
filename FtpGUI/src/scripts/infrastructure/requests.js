@@ -11,3 +11,9 @@ export class ListServerRequest {
         this.path = path
     }
 }
+
+export class UploadRequest {
+    constructor(path) {
+        this.path = path;
+    }
+};
