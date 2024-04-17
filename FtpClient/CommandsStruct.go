@@ -51,7 +51,9 @@ func (cs *CommandsStruct) check_connection() error {
 func (cs *CommandsStruct) release_connection() {
 	cs.muCheckConnection.Lock()
 	defer cs.muCheckConnection.Unlock()
-	(*cs.connectionData).Close()
+	if (cs.connectionData) != nil {
+		(*cs.connectionData).Close()
+	}
 	cs.connectionData = nil
 	cs.connDataUsed = false
 }

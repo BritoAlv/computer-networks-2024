@@ -32,6 +32,7 @@ func (cs *CommandsStruct) PUT(arg string) (string, error) {
 }
 
 func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
+	defer cs.release_connection() 
 	file, err := os.Open(filename)
 	if err != nil {
 		return "", err
@@ -72,7 +73,6 @@ func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinar
 			return "", err
 		}
 	}
-	defer cs.release_connection()
 	result, err := readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err

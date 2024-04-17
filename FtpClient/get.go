@@ -20,6 +20,7 @@ func (cs *CommandsStruct) GET(arg string) (string, error) {
 }
 
 func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, error) {
+	defer cs.release_connection()
 	parts := strings.Split(pathname, "/")
 	filename := parts[len(parts)-1]
 	file, _ := os.Create(filename)
@@ -59,7 +60,6 @@ func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, e
 		return "", err
 	}
 	// this line made the code work !! .
-	defer cs.release_connection()
 	result, err := readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err

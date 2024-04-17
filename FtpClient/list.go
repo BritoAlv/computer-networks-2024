@@ -3,6 +3,7 @@ package main
 import "strings"
 
 func (cs *CommandsStruct) LS(path string) (string, error) {
+	defer cs.release_connection()
 	// first try yo establish a PASSIVE Connection Data.
 	err := cs.check_connection()
 	if err != nil {
@@ -20,6 +21,5 @@ func (cs *CommandsStruct) LS(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer cs.release_connection()
 	return data, nil
 }
