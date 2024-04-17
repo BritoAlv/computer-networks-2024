@@ -4,6 +4,7 @@ export function serverDirectoryComponent() {
     
     const downloadFileButton = document.querySelector("#download-file-button");
     const downloadDirectoryButton = document.querySelector("#download-directory-button");
+    const refreshButton = document.querySelector("#server-refresh");
 
 
     downloadFileButton.addEventListener("click", () => {
@@ -12,5 +13,9 @@ export function serverDirectoryComponent() {
 
     downloadDirectoryButton.addEventListener("click", () => {
         displayer.downloadDirectory();
+    });
+
+    refreshButton.addEventListener("click", () => {
+        displayer.refreshServer();
     });
 }

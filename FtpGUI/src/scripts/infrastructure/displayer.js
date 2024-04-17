@@ -158,7 +158,7 @@ export class Displayer {
 
     async uploadDirectory() {
         if (selected.localDirectory == undefined || selected.serverDirectory == undefined) {
-            this.#displayStatus("Error while uploading file. Must select a source and destination directory in order to upload");
+            this.#displayStatus("Error while uploading directory. Must select a source and destination directory in order to upload");
             return;
         }
 
@@ -173,7 +173,7 @@ export class Displayer {
 
     async downloadFile() {
         if (selected.localDirectory == undefined || selected.serverFile == undefined) {
-            this.#displayStatus("Error while uploading file. Must select a file and a destination directory in order to download");
+            this.#displayStatus("Error while downloading file. Must select a file and a destination directory in order to download");
             return;
         }
 
@@ -188,7 +188,7 @@ export class Displayer {
 
     async downloadDirectory() {
         if (selected.localDirectory == undefined || selected.serverDirectory == undefined) {
-            this.#displayStatus("Error while uploading file. Must select a source and destination directory in order to download");
+            this.#displayStatus("Error while downloading directory. Must select a source and destination directory in order to download");
             return;
         }
 
@@ -199,6 +199,22 @@ export class Displayer {
         const response = await this.#requester.post(this.#apiUrl + "directories/download", request);
 
         this.#displayStatus(response.status);
+    }
+
+    async refreshLocal() {
+        if(selected.localDirectory == undefined) {
+            this.#displayStatus("Error while refreshing local directory. Must select a directory in order to refresh it");
+        }
+
+        await this.displayLocalDirectory(selected.localDirectory.substr(1));
+    }
+
+    async refreshServer() {
+        if(selected.serverDirectory == undefined) {
+            this.#displayStatus("Error while refreshing server directory. Must select a directory in order to refresh it");
+        }
+
+        await this.displayServerDirectory(selected.serverDirectory.substr(1));
     }
 
     #displayStatus(status) {
