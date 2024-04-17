@@ -180,12 +180,14 @@ export class DirectoryTree {
         if (directory.display)
             directory.files.forEach(f => {
                 // Add i to id to make it a valid one
-                files += `<li class="file-item" id="i${f.id}">${f.name}</li>`;
+                files += `<li class="file-item" id="i${f.id}">🔷 ${f.name}</li>`;
             });
+        
+        const directoryIcon = directory.display ? `📂` : `📁`;
 
         // Add i to id to make it a valid one
         return `
-            <li class="directory-item" id="i${directory.id}">${directory.name}</li>
+            <li class="directory-item" id="i${directory.id}">${directoryIcon} ${directory.name}</li>
             <ul>
                 ${files}
                 ${directories}
