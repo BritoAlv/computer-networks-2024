@@ -15,11 +15,43 @@ type FtpSession struct {
 	queueResponses    Queue
 }
 
-func (cs *FtpSession) check_connectionPort( connData *net.Conn ) error {
+func SessionBuilder(exam FTPExample) (*FtpSession, error) {
+	conn, err := net.Dial("tcp", exam.ip+":"+exam.port)
+	if err != nil {
+		return nil, err
+	}
+	cs := &FtpSession{
+		connectionConfig:  &conn,
+		connectionData:    nil,
+		muRead:            sync.Mutex{},
+		muCheckConnection: sync.Mutex{},
+		connDataUsed:      false,
+		queueResponses:    *NewQueue(),
+	}
+	_, err = readOnMemoryDefault(cs)
+	if err != nil {
+		return nil, err
+	}
+	_, err = cs.USER(exam.user)
+	if err != nil {
+		return nil, err
+	}
+	_ , err = cs.PASS(exam.password)
+	if err != nil {
+		return nil, err
+	}
+	return cs, nil
+}
+
+func SessionFinish(cs *FtpSession) {
+	(*cs.connectionConfig).Close()
+}
+
+func (cs *FtpSession) check_connectionPort(connData *net.Conn) error {
 	cs.muCheckConnection.Lock()
 	defer cs.muCheckConnection.Unlock()
 
-	if cs.connectionData == nil || !cs.connDataUsed{
+	if cs.connectionData == nil || !cs.connDataUsed {
 		cs.connectionData = connData
 		cs.connDataUsed = false
 	} else {
