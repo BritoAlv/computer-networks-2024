@@ -72,7 +72,30 @@ Endpoint para manejar el estado de las operaciones realizadas sobre el servidor.
 
 etc...
 
-## POST url/list 
+## GET url/list/local
+
+Endpoint para listar el directorio local
+
+### Request
+
+```json
+{
+  "path": "/"
+}
+```
+
+### Response 
+
+```json
+  {
+    "directories": "string of all the directories and files",
+    "successful": true
+  }
+```
+
+## POST url/list/server
+
+Endpoint para listar un directorio del servidor
 
 ### Request
 
@@ -82,11 +105,13 @@ etc...
   }
 ```
 
+
 ### Response 
 
 ```json
   {
-    "directories": "string of all the directories and files"
+    "directories": "string of all the directories and files",
+    "successful": true
   }
 ```
 
@@ -96,7 +121,8 @@ etc...
 
 ```json
 {
-  "path": "music.mp3",
+  "source": "/Music/music.mp3",
+  "destination": "/Data/"
 }
 ```
 
@@ -122,7 +148,8 @@ etc...
 
 ```json
 {
-  "path": "./Music/music.mp3"
+  "source": "/Music/music.mp3",
+  "destination": "/Data/"
 }
 ```
 
@@ -168,13 +195,41 @@ etc...
 }
 ```
 
+## POST url/directories/upload
+
+### Request
+
+```json
+{
+  "source": "/Music/",
+  "destination": "/Data/"
+}
+```
+
+### Response
+
+```json
+{
+  "status": "Start uploading directory",
+  "successful": true
+}
+```
+
+```json
+{
+  "status": "Error while uploading directory",
+  "successful": false
+}
+```
+
 ## POST url/directories/download
 
 ### Request
 
 ```json
 {
-  "path": "./Pictures"
+  "source": "/Music/",
+  "destination": "/Data/"
 }
 ```
 

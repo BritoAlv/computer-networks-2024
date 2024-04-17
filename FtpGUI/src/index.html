@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
     <script type="module" src="./scripts/main.js"></script>
 </head>
+
 <body>
     <div class="container connection-setup">
         <div class="ip-address-container">
@@ -34,21 +37,25 @@
 
 
     <div class="container connection-status">
-        <p>
-            Connection status
-        </p>
+        <h1>Connection Status</h1>
+
+        <div id="status" class="scrollable">
+
+        </div>
     </div>
 
 
     <div class="container local-directory">
         <h1>Local directory</h1>
 
-        <ul>
-            <li>file_name</li>
-        </ul>
+        <div id="local-directory" class="scrollable">
+
+        </div>
 
         <div class="local-button-container">
-            <input type="button" value="upload" id="upload-button">
+            <input type="button" value="Upload File" id="upload-file-button">
+            <input type="button" value="Upload Directory" id="upload-directory-button">
+            <input type="button" value="Refresh" id="local-refresh">
         </div>
     </div>
 
@@ -56,17 +63,20 @@
     <div class="container server-directory">
         <h1>Server directory</h1>
 
-        <ul>
-            <li>file_name</li>
-        </ul>
+        <div id="server-directory" class="scrollable">
+
+        </div>
 
         <div class="server-button-container">
+            <input type="text" id="create-directory-input">
             <input type="button" value="Create directory" id="create-directory-button">
             <input type="button" value="Remove directory" id="remove-directory-button">
             <input type="button" value="Download directory" id="download-directory-button">
             <input type="button" value="Download file" id="download-file-button">
             <input type="button" value="Remove file" id="remove-file-button">
+            <input type="button" value="Refresh" id="server-refresh">
         </div>
     </div>
 </body>
+
 </html>

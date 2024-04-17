@@ -2,9 +2,11 @@ export class Directory {
     constructor(name) {
         this.id = generateUUID();
         this.name = name;
+        this.path = ""
         this.parent = null;
         this.directories = [];
         this.files = [];
+        this.display = true;
     }
 }
 
@@ -14,65 +16,89 @@ export class File {
         this.name = name;
         this.directory = null;
     }
+
+    path() {
+        return `${this.directory.path}${this.name}`
+    }
 }
 
 export class DirectoryTree {
     constructor() {
         this.root = new Directory("root");
+        this.root.path = "/"
     }
 
     findDirectory(directoryId) {
-        const result = this.#findDirectory(this.root, directoryId, []);
+        const result = this.#findDirectory(this.root, directoryId);
         if (result == null)
             throw new Error("Directory id was not found");
 
         return result;
     }
 
+    findFile(fileId) {
+        const result = this.#findFile(this.root, fileId);
+        if (result == null)
+            throw new Error("File id was not found");
+
+        return result;
+    }
+
     insertFile(directoryId, fileName) {
-        if (!this.#insertFile(this.root, directoryId, fileName, []))
+        if (!this.#insertFile(this.root, directoryId, fileName))
             throw new Error("Directory id was not found");
     }
 
     insertDirectory(parentId, directoryName) {
-        if (!this.#insertDirectory(this.root, parentId, directoryName, []))
+        if (!this.#insertDirectory(this.root, parentId, directoryName, "/"))
             throw new Error("Directory id was not found");
     }
 
     removeFile(fileId) {
-        if (!this.#removeFile(this.root, fileId, []))
+        if (!this.#removeFile(this.root, fileId))
             throw new Error("File id was not found");
     }
 
     removeDirectory(directoryId) {
-        if (!this.#removeDirectory(this.root, directoryId, []))
+        if (!this.#removeDirectory(this.root, directoryId))
             throw new Error("Directory id was not found")
     }
 
     toHtml() {
-        return `<ul>${this.#toHtml(this.root, [])}</ul>`;
+        return `<ul>${this.#toHtml(this.root)}</ul>`;
     }
 
-    #findDirectory(directory, directoryId, visitedDirectories) {
+    #findDirectory(directory, directoryId) {
         if (directory.id == directoryId) {
             return directory;
         }
         else {
-            visitedDirectories.push(directory.id);
-
             for (const dir of directory.directories) {
-                if (!visitedDirectories.includes(dir.id)) {
-                    const result = this.#findDirectory(dir, directoryId, visitedDirectories)
-                    if (result != null)
-                        return result;
-                }
+                const result = this.#findDirectory(dir, directoryId);
+                if (result != null)
+                    return result;
             }
 
             return null;
         }
     }
 
-    #insertFile(directory, directoryId, fileName, visitedDirectories) {
+    #findFile(directory, fileId) {
+        const file = directory.files.filter(f => f.id == fileId)[0];
+
+        if (file != undefined)
+            return file;
+
+        for (const dir of directory.directories) {
+            const result = this.#findFile(dir, fileId);
+            if (result != null)
+                return result;
+        }
+
+        return null;
+    }
+
+    #insertFile(directory, directoryId, fileName) {
         if (directory.id == directoryId) {
             const file = new File(fileName);
             file.directory = directory;
@@ -80,41 +106,34 @@ export class DirectoryTree {
             return true;
         }
         else {
-            visitedDirectories.push(directory.id);
-
             for (const dir of directory.directories) {
-                if (!visitedDirectories.includes(dir.id)) {
-                    if (this.#insertFile(dir, directoryId, fileName, visitedDirectories))
-                        return true;
-                }
+                if (this.#insertFile(dir, directoryId, fileName))
+                    return true;
             }
 
             return false;
         }
     }
 
-    #insertDirectory(parent, parentId, directoryName, visitedDirectories) {
+    #insertDirectory(parent, parentId, directoryName, path) {
         if (parent.id == parentId) {
             const directory = new Directory(directoryName);
+            directory.path = `${path}${directoryName}/`
             directory.parent = parent;
             parent.directories.push(directory);
             return true;
         }
         else {
-            visitedDirectories.push(parent.id);
-
             for (const dir of parent.directories) {
-                if (!visitedDirectories.includes(dir.id)) {
-                    if (this.#insertDirectory(dir, parentId, directoryName, visitedDirectories))
-                        return true;
-                }
+                if (this.#insertDirectory(dir, parentId, directoryName, `${path}${dir.name}/`))
+                    return true;
             }
 
             return false;
         }
     }
 
-    #removeFile(directory, fileId, visitedDirectories) {
+    #removeFile(directory, fileId) {
         const file = directory.files.find(f => f.id == fileId);
 
         if (file != undefined) {
@@ -123,20 +142,16 @@ export class DirectoryTree {
             return true;
         }
         else {
-            visitedDirectories.push(directory.id);
-
             for (const dir of directory.directories) {
-                if (!visitedDirectories.includes(dir.id)) {
-                    if (this.#removeFile(dir, fileId, visitedDirectories))
-                        return true;
-                }
+                if (this.#removeFile(dir, fileId))
+                    return true;
             }
 
             return false;
         }
     }
 
-    #removeDirectory(parent, directoryId, visitedDirectories) {
+    #removeDirectory(parent, directoryId) {
         const directory = parent.directories.find(dir => dir.id == directoryId);
 
         if (directory != undefined) {
@@ -145,35 +160,32 @@ export class DirectoryTree {
             return true;
         }
         else {
-            visitedDirectories.push(parent.id);
-
             for (const dir of parent.directories) {
-                if (!visitedDirectories.includes(dir.id)) {
-                    if (this.#removeDirectory(dir, directoryId, visitedDirectories))
-                        return true;
-                }
+                if (this.#removeDirectory(dir, directoryId))
+                    return true;
             }
 
             return false;
         }
     }
 
-    #toHtml(directory, visitedDirectories) {
-        visitedDirectories.push(directory.id);
+    #toHtml(directory) {
         let directories = "";
         let files = ""
 
         for (const dir of directory.directories) {
-            if (!visitedDirectories.includes(dir.id))
-                directories += this.#toHtml(dir, visitedDirectories);
+            directories += this.#toHtml(dir);
         }
 
-        directory.files.forEach(f => {
-            files += `<li>${f.name}</li>`;
-        });
+        if (directory.display)
+            directory.files.forEach(f => {
+                // Add i to id to make it a valid one
+                files += `<li class="file-item" id="i${f.id}">${f.name}</li>`;
+            });
 
+        // Add i to id to make it a valid one
         return `
-            <li>${directory.name}</li>
+            <li class="directory-item" id="i${directory.id}">${directory.name}</li>
             <ul>
                 ${files}
                 ${directories}
