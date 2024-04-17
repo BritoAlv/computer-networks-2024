@@ -74,25 +74,22 @@ export class Displayer {
         const path = directory.path;
 
         // Wait until server is functioning
-        // const listRequest = new PathRequest(path);
-        // const listResponse = await this.#requester.post(this.#apiUrl+"list/server", listRequest);
-        // if(!listResponse.successful) {
-        //     this.#displayStatus("Error while listing directory");
-        //     return;
-        // }
+        const request = new PathRequest(path);
+        const response = await this.#requester.post(this.#apiUrl+"list/server", request);
 
-        // Mock response
-        const directories = ["Pictures", "Music", "Videos", "Books"];
-        const files = ["main.c", "lib.c", "script.py"];
+        if(!response.successful) {
+            this.#displayStatus("Error while listing directory");
+            return;
+        }
 
         // Insert directories into directory tree
-        directories.forEach(dir => {
+        response.directories.forEach(dir => {
             if (!directory.directories.map(d => d.name).includes(dir))
                 this.#serverDirectoryTree.insertDirectory(directoryId, dir);
         });
 
         // Insert files into directory tree
-        files.forEach(f => {
+        response.files.forEach(f => {
             if (!directory.files.map(fp => fp.name).includes(f))
                 this.#serverDirectoryTree.insertFile(directoryId, f);
         });
@@ -107,27 +104,22 @@ export class Displayer {
         const directory = this.#localDirectoryTree.findDirectory(directoryId);
         const path = directory.path;
 
-        // Wait until server is functioning
-        // const listRequest = new PathRequest(path);
-        // const listResponse = await this.#requester.post(this.#apiUrl+"list/local", listRequest);
+        const request = new PathRequest(path);
+        const response = await this.#requester.post(this.#apiUrl+"list/local", request);
 
-        // if(!listResponse.successful) {
-        //     this.#displayStatus("Error while listing directory");
-        //     return;
-        // }
-
-        // Mock response
-        const directories = ["Movies", "Lectures", "Projects"];
-        const files = ["pic.jpeg", "music.mp3"];
+        if(!response.successful) {
+            this.#displayStatus("Error while listing directory");
+            return;
+        }
 
         // Insert directories into directory tree
-        directories.forEach(dir => {
+        response.directories.forEach(dir => {
             if (!directory.directories.map(d => d.name).includes(dir))
                 this.#localDirectoryTree.insertDirectory(directoryId, dir);
         });
 
         // Insert files into directory tree
-        files.forEach(f => {
+        response.files.forEach(f => {
             if (!directory.files.map(fp => fp.name).includes(f))
                 this.#localDirectoryTree.insertFile(directoryId, f);
         });

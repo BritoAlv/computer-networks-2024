@@ -88,7 +88,8 @@ Endpoint para listar el directorio local
 
 ```json
   {
-    "directories": "string of all the directories and files",
+    "directories": ["Music", "Movies", "Books"],
+    "files": ["song.mp3", "main.c"],  
     "successful": true
   }
 ```
@@ -110,7 +111,8 @@ Endpoint para listar un directorio del servidor
 
 ```json
   {
-    "directories": "string of all the directories and files",
+    "directories": ["Music", "Movies", "Books"],
+    "files": ["song.mp3", "main.c"],  
     "successful": true
   }
 ```
