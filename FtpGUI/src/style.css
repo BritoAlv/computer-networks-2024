@@ -6,3 +6,11 @@
     height: 15rem;
     overflow: auto;
 }
+
+.selected-directory {
+    background-color: tomato;
+}
+
+.selected-file {
+    background-color: skyblue;
+}
