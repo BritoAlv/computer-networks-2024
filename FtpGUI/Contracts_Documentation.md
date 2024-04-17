@@ -9,6 +9,7 @@ Endpoint para conectar con el servidor
 ```json
 {
   "ipAddress": "127.0.0.1",
+  "port": 21,
   "userName": "johnDoe",
   "password": "pass"
 }

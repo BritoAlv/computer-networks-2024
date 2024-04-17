@@ -73,7 +73,6 @@ export class Displayer {
         const directory = this.#serverDirectoryTree.findDirectory(directoryId);
         const path = directory.path;
 
-        // Wait until server is functioning
         const request = new PathRequest(path);
         const response = await this.#requester.post(this.#apiUrl+"list/server", request);
 
