@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-func (cs *CommandsStruct) NLST(input string) (string, error) {
+func (cs *FtpSession) NLST(input string) (string, error) {
 
 	// Enter Passive Mode
 	err := cs.check_connection()

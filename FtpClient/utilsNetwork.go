@@ -18,7 +18,7 @@ func open_conection(connDataConfig string) (net.Conn, error) {
 	return connData, nil
 }
 
-func writeonMemoryDefault(cs *CommandsStruct, dataS string) (int, error) {
+func writeonMemoryDefault(cs *FtpSession, dataS string) (int, error) {
 	data := []byte(dataS)
 	pr := 0
 	for {
@@ -76,7 +76,7 @@ func readOnMemoryPassive(connData *net.Conn) (string, error) {
 	return string(data), nil
 }
 
-func getResponse(cs *CommandsStruct) (string, error) {
+func getResponse(cs *FtpSession) (string, error) {
 	result := cs.queueResponses.Dequeue()
 	respCode := result[:3]
 	err := CheckResponseNumber(respCode)
@@ -86,7 +86,7 @@ func getResponse(cs *CommandsStruct) (string, error) {
 	return result, nil
 }
 
-func readOnMemoryDefault(cs *CommandsStruct) (string, error) {
+func readOnMemoryDefault(cs *FtpSession) (string, error) {
 	cs.muRead.Lock()
 	defer cs.muRead.Unlock()
 	if cs.queueResponses.list.Len() == 0 {
@@ -129,7 +129,7 @@ func readOnMemoryDefault(cs *CommandsStruct) (string, error) {
 	return getResponse(cs)
 }
 
-func writeAndreadOnMemory(cs *CommandsStruct, data string) (string, error) {
+func writeAndreadOnMemory(cs *FtpSession, data string) (string, error) {
 	data += "\r\n"
 	_, err := writeonMemoryDefault(cs, data)
 	if err != nil {

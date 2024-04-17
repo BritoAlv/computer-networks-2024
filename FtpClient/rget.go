@@ -5,10 +5,10 @@ import (
 	"os"
 )
 
-func (cs *CommandsStruct) RGET(path string) (string, error) {
+func (cs *FtpSession) RGET(path string) (string, error) {
 	return cs.rGET("RGET", path)
 }
-func (cs *CommandsStruct) rGET(foldername string, path string) (string, error) {
+func (cs *FtpSession) rGET(foldername string, path string) (string, error) {
 	err := os.MkdirAll(foldername, 0777)
 	if err != nil {
 		return "", err

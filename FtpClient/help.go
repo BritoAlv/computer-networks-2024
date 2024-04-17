@@ -1,5 +1,5 @@
 package main
 
-func (cs *CommandsStruct) HELP(args string) (string, error) {
+func (cs *FtpSession) HELP(args string) (string, error) {
 	return writeAndreadOnMemory(cs, "HELP ")
 }

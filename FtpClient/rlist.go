@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (cs *CommandsStruct) RNLS(path string) (string, error) {
+func (cs *FtpSession) RNLS(path string) (string, error) {
 	split := strings.Split(path, " ")
 	if len(split) >= 2 || len(split) == 0 {
 		return "", errors.New("wrong Argument Format: rnls (path)*")
@@ -13,7 +13,7 @@ func (cs *CommandsStruct) RNLS(path string) (string, error) {
 	return recLS(cs, split[0], 0, "")
 }
 
-func recLS(cs *CommandsStruct, path string, i int, prev string) (string, error) {
+func recLS(cs *FtpSession, path string, i int, prev string) (string, error) {
 	spacing := ""
 	j := 0
 	for {

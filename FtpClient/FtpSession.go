@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-type CommandsStruct struct {
+type FtpSession struct {
 	connectionConfig  *net.Conn
 	connectionData    *net.Conn
 	muRead            sync.Mutex
@@ -15,7 +15,7 @@ type CommandsStruct struct {
 	queueResponses    Queue
 }
 
-func (cs *CommandsStruct) check_connectionPort( connData *net.Conn ) error {
+func (cs *FtpSession) check_connectionPort( connData *net.Conn ) error {
 	cs.muCheckConnection.Lock()
 	defer cs.muCheckConnection.Unlock()
 
@@ -29,7 +29,7 @@ func (cs *CommandsStruct) check_connectionPort( connData *net.Conn ) error {
 	return nil
 }
 
-func (cs *CommandsStruct) check_connection() error {
+func (cs *FtpSession) check_connection() error {
 	cs.muCheckConnection.Lock()
 	defer cs.muCheckConnection.Unlock()
 
@@ -48,7 +48,7 @@ func (cs *CommandsStruct) check_connection() error {
 	}
 }
 
-func (cs *CommandsStruct) release_connection() {
+func (cs *FtpSession) release_connection() {
 	cs.muCheckConnection.Lock()
 	defer cs.muCheckConnection.Unlock()
 	if (cs.connectionData) != nil {

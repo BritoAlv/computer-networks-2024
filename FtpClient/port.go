@@ -2,7 +2,7 @@ package main
 
 import "strings"
 
-func (cs *CommandsStruct) PORT(args string) (string, error) {
+func (cs *FtpSession) PORT(args string) (string, error) {
 	_, err := writeAndreadOnMemory(cs, "PORT "+strings.TrimSpace(args))
 	if err != nil {
 		return "", err

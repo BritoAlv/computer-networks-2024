@@ -2,7 +2,7 @@ package main
 
 import "strings"
 
-func (cs *CommandsStruct) LS(path string) (string, error) {
+func (cs *FtpSession) LS(path string) (string, error) {
 	defer cs.release_connection()
 	// first try yo establish a PASSIVE Connection Data.
 	err := cs.check_connection()

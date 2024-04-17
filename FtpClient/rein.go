@@ -1,5 +1,5 @@
 package main
 
-func (cs *CommandsStruct) REIN(args string) (string, error) {
+func (cs *FtpSession) REIN(args string) (string, error) {
 	return writeAndreadOnMemory(cs, "REIN ")
 }

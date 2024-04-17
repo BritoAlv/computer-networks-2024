@@ -10,10 +10,10 @@ import (
 	"sync"
 )
 
-var X CommandsStruct
+var X FtpSession
 var wg sync.WaitGroup
 
-func execute_command(command string, X *CommandsStruct) {
+func execute_command(command string, X *FtpSession) {
 	command = strings.Split(command, "\n")[0]
 	parts := strings.Split(command, " ")
 	if len(parts) == 0 {

@@ -1,5 +1,5 @@
 package main
 
-func (cs *CommandsStruct) SYST(arg string) (string, error) {
+func (cs *FtpSession) SYST(arg string) (string, error) {
 	return writeAndreadOnMemory(cs, "SYST ") 
 }

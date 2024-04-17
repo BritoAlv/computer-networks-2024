@@ -1,6 +1,6 @@
 package main
 
-func (cs *CommandsStruct) PWD(input string) (string, error) {	
+func (cs *FtpSession) PWD(input string) (string, error) {	
 	response, err := writeAndreadOnMemory(cs, "PWD ")
 	if err != nil {
 		return "", err

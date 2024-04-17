@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (cs *CommandsStruct) SIZE(arg string) (string, error) {
+func (cs *FtpSession) SIZE(arg string) (string, error) {
 	result, err := writeAndreadOnMemory(cs, "SIZE " + arg)
 	if err != nil {
 		return strconv.Itoa(no_size), nil

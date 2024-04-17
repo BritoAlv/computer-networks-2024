@@ -2,7 +2,7 @@ package main
 
 import "strings"
 
-func (cs *CommandsStruct) MKD(input string) (string, error) {
+func (cs *FtpSession) MKD(input string) (string, error) {
 
 	directories := strings.Split(input, "/")
 	currentDirectory := directories[0]

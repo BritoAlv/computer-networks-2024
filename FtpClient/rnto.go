@@ -1,6 +1,6 @@
 package main
 
 
-func (cs *CommandsStruct) RNTO(newName string) (string, error) {
+func (cs *FtpSession) RNTO(newName string) (string, error) {
 	return writeAndreadOnMemory(cs, "RNTO " + newName)
 }

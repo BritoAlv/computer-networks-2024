@@ -8,7 +8,7 @@ import (
 
 
 
-func (cs *CommandsStruct) PUT(arg string) (string, error) {
+func (cs *FtpSession) PUT(arg string) (string, error) {
 	useUnique := false
 	useBinary := true
 	useAppend := false
@@ -31,7 +31,7 @@ func (cs *CommandsStruct) PUT(arg string) (string, error) {
 	return command_store(cs, strings.TrimSpace(arg), useUnique, useBinary, useAppend)
 }
 
-func command_store(cs *CommandsStruct, filename string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
+func command_store(cs *FtpSession, filename string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
 	defer cs.release_connection() 
 	file, err := os.Open(filename)
 	if err != nil {

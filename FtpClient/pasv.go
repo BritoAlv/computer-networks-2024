@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (cs *CommandsStruct) PASV(args string) (string, error) {
+func (cs *FtpSession) PASV(args string) (string, error) {
 	data, err := writeAndreadOnMemory(cs, "PASV ")
 	if err != nil {
 		return "", err

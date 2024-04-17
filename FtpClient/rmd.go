@@ -1,10 +1,10 @@
 package main
 
-func (cs *CommandsStruct) RMD(input string) (string, error) {
+func (cs *FtpSession) RMD(input string) (string, error) {
 	return RMD_Recursive(cs, input)
 }
 
-func RMD_Recursive(cs *CommandsStruct, directory string) (string, error) {
+func RMD_Recursive(cs *FtpSession, directory string) (string, error) {
 
 	
 	folders, files , err  := get_files_folders_current(cs, directory)

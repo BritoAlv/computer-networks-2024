@@ -1,5 +1,5 @@
 package main
 
-func (cs *CommandsStruct) NOOP(args string) (string, error) {
+func (cs *FtpSession) NOOP(args string) (string, error) {
 	return writeAndreadOnMemory(cs, "NOOP")
 }

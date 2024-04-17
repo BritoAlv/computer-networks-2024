@@ -40,7 +40,7 @@ func parse_get_connection_ftp(input string) (string, string) {
 	return ip, port
 }
 
-func get_files_folders_current(cs *CommandsStruct, path string) ([]string, []string, error) {
+func get_files_folders_current(cs *FtpSession, path string) ([]string, []string, error) {
 	response1, err := cs.LS(path)
 	if err != nil {
 		return []string{}, []string{}, errors.New("something is wrong with LS " +  path + " " + err.Error())

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func (cs *CommandsStruct) GET(arg string) (string, error) {
+func (cs *FtpSession) GET(arg string) (string, error) {
 	useBinary := true
 	if strings.HasPrefix(arg, binary_flag) {
 		useBinary = true
@@ -19,7 +19,7 @@ func (cs *CommandsStruct) GET(arg string) (string, error) {
 	return command_get(cs, strings.TrimSpace(arg), useBinary)
 }
 
-func command_get(cs *CommandsStruct, pathname string, useBinary bool) (string, error) {
+func command_get(cs *FtpSession, pathname string, useBinary bool) (string, error) {
 	defer cs.release_connection()
 	parts := strings.Split(pathname, "/")
 	filename := parts[len(parts)-1]
