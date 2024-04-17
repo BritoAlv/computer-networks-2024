@@ -31,7 +31,7 @@ export class Displayer {
         if (!connectionResponse.successful)
             return;
 
-        this.displayServerDirectory()
+        await this.displayServerDirectory()
     }
 
     async close() {
@@ -277,12 +277,12 @@ export class Displayer {
     #displayStatus(status) {
         const statusContainer = document.querySelector("#status");
 
-        this.#statusList.push(status);
+        this.#statusList.unshift(status);
         let data = "";
         this.#statusList.forEach(s => {
             data += `<li>${s}</li>`
         });
-        statusContainer.innerHTML = data;
+        statusContainer.innerHTML = `<ul>${data}</ul>`;
     }
 
     #setLocalDirectoryHtml() {

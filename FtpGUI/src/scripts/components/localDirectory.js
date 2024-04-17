@@ -1,7 +1,7 @@
 import { displayer, selected } from "../globals.js"
 
-export function localDirectoryComponent() {
-    displayer.displayLocalDirectory();
+export async function localDirectoryComponent() {
+    await displayer.displayLocalDirectory();
 
     const uploadFileButton = document.querySelector("#upload-file-button");
     const uploadDirectoryButton = document.querySelector("#upload-directory-button");

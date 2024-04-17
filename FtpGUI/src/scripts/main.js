@@ -6,5 +6,5 @@ import { serverDirectoryComponent } from "./components/serverDirectory.js";
 // Load required components
 connectionSetupComponent();
 connectionStatusComponent();
-localDirectoryComponent();
+await localDirectoryComponent();
 serverDirectoryComponent();
