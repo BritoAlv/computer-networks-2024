@@ -6,7 +6,7 @@ export class CreateConnectionRequest {
     }
 }
 
-export class ListServerRequest {
+export class PathRequest {
     constructor(path) {
         this.path = path
     }

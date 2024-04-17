@@ -1,7 +1,7 @@
 import { selected } from "../globals.js";
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
-import { CreateConnectionRequest, ListServerRequest, TransferRequest } from "./requests.js";
+import { CreateConnectionRequest, PathRequest, TransferRequest } from "./requests.js";
 
 export class Displayer {
     #apiUrl;
@@ -70,7 +70,7 @@ export class Displayer {
         const path = directory.path;
 
         // Wait until server is functioning
-        // const listRequest = new ListServerRequest(path);
+        // const listRequest = new PathRequest(path);
         // const listResponse = await this.#requester.post(this.#apiUrl+"list/server", listRequest);
         // if(!listResponse.successful) {
         //     this.#displayStatus("Error while listing directory");
@@ -93,12 +93,7 @@ export class Displayer {
                 this.#serverDirectoryTree.insertFile(directoryId, f);
         });
 
-        const serverDirectory = document.querySelector("#server-directory");
-
-        // Display html
-        serverDirectory.innerHTML = this.#serverDirectoryTree.toHtml();
-
-        this.#setServerDirectoryEvents(false);
+        this.#setServerDirectoryHtml();
     }
 
     async displayLocalDirectory(directoryId = undefined) {
@@ -109,7 +104,7 @@ export class Displayer {
         const path = directory.path;
 
         // Wait until server is functioning
-        // const listRequest = new ListServerRequest(path);
+        // const listRequest = new PathRequest(path);
         // const listResponse = await this.#requester.post(this.#apiUrl+"list/local", listRequest);
 
         // if(!listResponse.successful) {
@@ -133,12 +128,7 @@ export class Displayer {
                 this.#localDirectoryTree.insertFile(directoryId, f);
         });
 
-        const localDirectory = document.querySelector("#local-directory");
-
-        // Display html
-        localDirectory.innerHTML = this.#localDirectoryTree.toHtml();
-
-        this.#setLocalDirectoryEvents();
+        this.#setLocalDirectoryHtml();
     }
 
     async uploadFile() {
@@ -202,19 +192,86 @@ export class Displayer {
     }
 
     async refreshLocal() {
-        if(selected.localDirectory == undefined) {
+        if (selected.localDirectory == undefined) {
             this.#displayStatus("Error while refreshing local directory. Must select a directory in order to refresh it");
+            return;
         }
 
         await this.displayLocalDirectory(selected.localDirectory.substr(1));
     }
 
     async refreshServer() {
-        if(selected.serverDirectory == undefined) {
+        if (selected.serverDirectory == undefined) {
             this.#displayStatus("Error while refreshing server directory. Must select a directory in order to refresh it");
+            return;
         }
 
         await this.displayServerDirectory(selected.serverDirectory.substr(1));
+    }
+
+    async createDirectory(directoryName) {
+        if (selected.serverDirectory == undefined) {
+            this.#displayStatus("Error while creating server directory. Must select a directory in order to create one");
+            return;
+        }
+
+        const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1));
+        const path = `${directory.path}${directoryName}/`;
+        const request = new PathRequest(path);
+        const response = await this.#requester.post(this.#apiUrl + "directories/create", request);
+
+        this.#displayStatus(response.status);
+
+        if (!response.successful)
+            return;
+
+        this.#serverDirectoryTree.insertDirectory(directory.id, directoryName);
+
+        this.#setServerDirectoryHtml();
+    }
+
+    async removeDirectory() {
+        if (selected.serverDirectory == undefined) {
+            this.#displayStatus("Error while removing server directory. Must select a directory in order to remove it");
+            return;
+        }
+
+        const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1));
+        const path = directory.path;
+        const request = new PathRequest(path);
+        const response = await this.#requester.post(this.#apiUrl + "directories/remove", request);
+
+        this.#displayStatus(response.status);
+
+        if (!response.successful)
+            return;
+
+        selected.serverDirectory = undefined;
+        this.#serverDirectoryTree.removeDirectory(directory.id);
+
+        this.#setServerDirectoryHtml();
+    }
+
+    async removeFile() {
+        if (selected.serverFile == undefined) {
+            this.#displayStatus("Error while removing server file. Must select a file in order to remove it");
+            return;
+        }
+
+        const file = this.#serverDirectoryTree.findFile(selected.serverFile.substr(1));
+        const path = file.path();
+        const request = new PathRequest(path);
+        const response = await this.#requester.post(this.#apiUrl + "files/remove", request);
+
+        this.#displayStatus(response.status);
+
+        if (!response.successful)
+            return;
+
+        selected.serverFile = undefined;
+        this.#serverDirectoryTree.removeFile(file.id);
+
+        this.#setServerDirectoryHtml();
     }
 
     #displayStatus(status) {
@@ -226,6 +283,18 @@ export class Displayer {
             data += `<li>${s}</li>`
         });
         statusContainer.innerHTML = data;
+    }
+
+    #setLocalDirectoryHtml() {
+        const localDirectory = document.querySelector("#local-directory");
+        localDirectory.innerHTML = this.#localDirectoryTree.toHtml();
+        this.#setLocalDirectoryEvents();
+    }
+
+    #setServerDirectoryHtml() {
+        const serverDirectory = document.querySelector("#server-directory");
+        serverDirectory.innerHTML = this.#serverDirectoryTree.toHtml();
+        this.#setServerDirectoryEvents(false);
     }
 
     #setLocalDirectoryEvents() {
