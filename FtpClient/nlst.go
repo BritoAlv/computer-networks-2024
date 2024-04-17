@@ -8,6 +8,7 @@ func (cs *CommandsStruct) NLST(input string) (string, error) {
 
 	// Enter Passive Mode
 	err := cs.check_connection()
+	defer cs.release_connection()
 	if err != nil {
 		return "", err
 	}

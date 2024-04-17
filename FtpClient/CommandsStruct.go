@@ -34,7 +34,7 @@ func (cs *CommandsStruct) check_connection() error {
 	defer cs.muCheckConnection.Unlock()
 
 	if cs.connectionData == nil {
-		err := cs.PASV()
+		_, err := cs.PASV("")
 		if err != nil {
 			return err
 		}

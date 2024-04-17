@@ -5,20 +5,20 @@ import (
 	"strings"
 )
 
-func (cs *CommandsStruct) PASV() error {
+func (cs *CommandsStruct) PASV(args string) (string, error) {
 	data, err := writeAndreadOnMemory(cs, "PASV ")
 	if err != nil {
-		return err
+		return "", err
 	}
 	if strings.HasPrefix(data, "227") {
 		connData, err := open_conection(data)
 		if err != nil {
-			return err
+			return "",err
 		}
 		cs.connectionData = &connData
-		return nil
+		result := data[:len(data)-1] + " Opened the connection for you" 
+		return result, nil
 	} else {
-		return errors.New("PASV got wrong response : " + data)
+		return "", errors.New("PASV got wrong response : " + data)
 	}
-
 }
