@@ -39,6 +39,9 @@ export class Displayer {
 
         this.#displayStatus(response.status);
 
+        if (!response.successful)
+            return
+
         const serverDirectory = document.querySelector("#server-directory");
 
         // Reset server directory tree
