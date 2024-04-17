@@ -1,20 +1,21 @@
-export class CreateConnectionRequest {
-    constructor(ipAddress, userName, password) {
-        this.ipAddress = ipAddress;
-        this.userName = userName;
-        this.password = password;
+export class ConnectRequest {
+    constructor(ipAddress, port, userName, password) {
+        this.IpAddress = ipAddress;
+        this.Port = port;
+        this.UserName = userName;
+        this.Password = password;
     }
 }
 
 export class PathRequest {
     constructor(path) {
-        this.path = path
+        this.Path = path
     }
 }
 
 export class TransferRequest {
     constructor(source, destination) {
-        this.source = source;
-        this.destination = destination;
+        this.Source = source;
+        this.Destination = destination;
     }
 };

@@ -1,7 +1,7 @@
 import { selected } from "../globals.js";
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
-import { CreateConnectionRequest, PathRequest, TransferRequest } from "./requests.js";
+import { ConnectRequest, PathRequest, TransferRequest } from "./requests.js";
 
 export class Displayer {
     #apiUrl;
@@ -18,9 +18,10 @@ export class Displayer {
         this.#statusList = [];
     }
 
-    async connect(ipAddress, userName, password) {
-        const connectionRequest = new CreateConnectionRequest(
+    async connect(ipAddress, port, userName, password) {
+        const connectionRequest = new ConnectRequest(
             ipAddress,
+            port,
             userName,
             password
         );
