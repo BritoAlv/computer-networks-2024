@@ -2,13 +2,21 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
+var ftp_to_use FTPExample
+
 type ResponseConnect struct {
-	status string
-	succesful bool
+	Status string `json:"status"`
+	Succesful bool `json:"successful"`
+}
+
+type ConnectRequest struct {
+	IpAddress string `json:"ipAddress"`
+	UserName string `json:"userName"`
+	Password string `json:"password"`
+	Port string `json:"port"`
 }
 
 func enableCors(w *http.ResponseWriter) {
@@ -19,23 +27,37 @@ func enableCors(w *http.ResponseWriter) {
 
 func connectHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	if r.Method != http.MethodPost {
+	if r.Method == http.MethodOptions {
+        w.WriteHeader(http.StatusOK)
+        return
+	} else if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
-	js, err := json.Marshal(ResponseConnect{"Connected", true})
+	var request ConnectRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	ftp_to_use = FTPExample{
+		ip: request.IpAddress,
+		port: string(request.Port),
+		user: request.UserName,
+		password: request.Password,
+	}
+
+	js, err := json.Marshal(ResponseConnect{"OK", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
-	fmt.Fprintf(w, "You've hit the POST endpoint!")
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	fmt.Fprintf(w, "Hello, you've hit the API!")
 }
 
 func main() {
