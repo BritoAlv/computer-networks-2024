@@ -98,23 +98,31 @@ func readOnMemoryDefault(cs *CommandsStruct) (string, error) {
 			return "", err
 		}
 		data = append(data, tmp[:n]...)
-		dataStr := string(data)
-		lines := SplitString(dataStr, '\n')
-		for lines[len(lines)-1][3] != ' ' {
-			(*cs.connectionConfig).SetReadDeadline(time.Now().Add(timeout * time.Second))
-			n, err := (*cs.connectionConfig).Read(tmp)
-			if err != nil {
-				return "", err
+		response := string(data)
+		lines := SplitString(response, '\n')
+		for len(lines) > 0 {
+			responseCode := lines[0][0:3]
+			found := false
+			for i := 0; i < len(lines); i++ {
+				if strings.HasPrefix(lines[i], responseCode+" ") {
+					found = true
+					cs.queueResponses.Enqueue(strings.Join(lines[0:i+1], "\n"))
+					if i+1 < len(lines) {
+						lines = lines[i+1 :]
+					} else {
+						lines  = make([]string, 0)
+					}
+					break
+				}
 			}
-			data = append(data, tmp[:n]...)
-			dataStr := string(data)
-			lines = SplitString(dataStr, '\n')
-		}
-		start := 0
-		for index, line := range lines {
-			if len(line) > 3 && line[3] == ' ' {
-				cs.queueResponses.Enqueue( strings.Join(lines[start : index+1], "\n"))
-				start = index+1
+			if !found {
+				(*cs.connectionConfig).SetReadDeadline(time.Now().Add(timeout * time.Second))
+				n, err := (*cs.connectionConfig).Read(tmp)
+				if err != nil {
+					return "", err
+				}
+				newLines := SplitString(string(tmp[:n]), '\n')
+				lines = append(lines, newLines...)
 			}
 		}
 	}
