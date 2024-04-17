@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
     <script type="module" src="./scripts/main.js"></script>
 </head>
+
 <body>
     <div class="container connection-setup">
         <div class="ip-address-container">
@@ -35,16 +38,17 @@
 
     <div class="container connection-status">
         <h1>Connection Status</h1>
-        <ul id="status">
 
-        </ul>
+        <div id="status" class="scrollable">
+
+        </div>
     </div>
 
 
     <div class="container local-directory">
         <h1>Local directory</h1>
 
-        <div id="local-directory">
+        <div id="local-directory" class="scrollable">
 
         </div>
 
@@ -59,7 +63,7 @@
     <div class="container server-directory">
         <h1>Server directory</h1>
 
-        <div id="server-directory">
+        <div id="server-directory" class="scrollable">
 
         </div>
 
@@ -74,4 +78,5 @@
         </div>
     </div>
 </body>
+
 </html>
