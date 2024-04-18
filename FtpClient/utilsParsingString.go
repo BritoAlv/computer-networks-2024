@@ -2,9 +2,32 @@ package main
 
 import (
 	"errors"
+	"os"
 	"strconv"
 	"strings"
 )
+
+func get_files_folders_local(path string ) ([]string, []string, error) {
+	entries, err := os.ReadDir(path)
+	var folders = make([]string, 0)
+	var files = make([]string, 0)
+	if err != nil {
+		return folders, files, err
+	}
+	for _, entry := range entries {
+		if entry.IsDir() {
+			folders = append(folders, entry.Name())
+		} else {
+			files = append(files, entry.Name())
+		}
+	}
+	return folders, files, nil
+}
+
+func get_filename_path(path string) (string) {
+	parts := strings.Split(path, "/")
+	return parts[len(parts)-1]
+}
 
 func SplitString(s string, c byte) ([]string){
 	res := make([]string, 0)

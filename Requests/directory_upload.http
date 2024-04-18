@@ -1,0 +1,7 @@
+POST http://localhost:5035/directories/upload
+Content-Type: application/json
+
+{
+    "source" : "/home/alvaro/proyectos/juego_cartas",
+    "destination" : "/upload"
+}

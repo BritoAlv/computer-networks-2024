@@ -16,15 +16,18 @@ func (cs *FtpSession) GET(arg string) (string, error) {
 		useBinary = false
 		arg = strings.TrimSpace(arg[len(ascii_flag):])
 	}
-	return command_get(cs, strings.TrimSpace(arg), useBinary)
+	arg = strings.TrimSpace(arg)
+	parts := strings.Split(arg, "&")
+	if len(parts) == 1 || parts[1] == "" {
+		return command_get(cs, parts[0], "/", useBinary)
+	}
+	return command_get(cs, parts[0], parts[1], useBinary)
 }
 
-func command_get(cs *FtpSession, pathname string, useBinary bool) (string, error) {
-	defer cs.release_connection()
-	parts := strings.Split(pathname, "/")
+func command_get(cs *FtpSession, pathnameS string, pathnameD string , useBinary bool) (string, error) {
+	parts := strings.Split(pathnameS, "/")
 	filename := parts[len(parts)-1]
-	os.Mkdir("RGET", 0777)
-	file, _ := os.Create("./RGET/"+filename)
+	file, _ := os.Create(pathnameD+filename)
 	err := cs.check_connection()
 	if err != nil {
 		return "", err
@@ -32,35 +35,33 @@ func command_get(cs *FtpSession, pathname string, useBinary bool) (string, error
 	if useBinary {
 		_, err := cs.TYPE("I")
 		if err != nil {
-			os.Remove(filename)
 			return "", err
 		}
 	}
 
-	sizeStr, err := cs.SIZE(pathname)
+	sizeStr, err := cs.SIZE(pathnameS)
 	if err != nil {
-		os.Remove(filename)
+		
 		return "", err
 	}
 	
-	_, err = writeAndreadOnMemory(cs, "RETR "+pathname)
+	_, err = writeAndreadOnMemory(cs, "RETR "+pathnameS)
 	if err != nil {
-		os.Remove(filename)
+		
 		return "", err
 	}
 
 	sizeInt, err := strconv.ParseInt(sizeStr, 10, 64)
 	if err != nil {
-		os.Remove(filename)
 		return "", err
 	}
 
 	err = readOnFile(cs.connectionData, file, sizeInt)
 	if err != nil {
-		os.Remove(filename)
 		return "", err
 	}
 	// this line made the code work !! .
+	cs.release_connection()
 	result, err := readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err

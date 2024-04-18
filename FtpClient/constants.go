@@ -2,7 +2,7 @@ package main
 
 
 const max_size = 512
-const timeout = 20
+const timeout = 60
 const no_size = -1
 
 const append_flag = "--append"

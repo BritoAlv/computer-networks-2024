@@ -1,12 +1,11 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"os"
 	"strings"
 )
-
-
 
 func (cs *FtpSession) PUT(arg string) (string, error) {
 	useUnique := false
@@ -28,12 +27,16 @@ func (cs *FtpSession) PUT(arg string) (string, error) {
 		useBinary = false
 		arg = strings.TrimSpace(arg[len(ascii_flag):])
 	}
-	return command_store(cs, strings.TrimSpace(arg), useUnique, useBinary, useAppend)
+	arg = strings.TrimSpace(arg)
+	parts := strings.Split(arg, "&")
+	if len(parts) == 1 || parts[1] == "" {
+		return "", errors.New("where put the file ")
+	}
+	return command_store(cs, parts[0], parts[1], useUnique, useBinary, useAppend)
 }
 
-func command_store(cs *FtpSession, filename string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
-	defer cs.release_connection() 
-	file, err := os.Open(filename)
+func command_store(cs *FtpSession, fileS string, fileD string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
+	file, err := os.Open(fileS)
 	if err != nil {
 		return "", err
 	}
@@ -55,7 +58,7 @@ func command_store(cs *FtpSession, filename string, useUnique bool, useBinary bo
 	if useUnique {
 		command = "STOU "
 	}
-	_, err = writeAndreadOnMemory(cs, command+filename)
+	_, err = writeAndreadOnMemory(cs, command+fileD)
 	if err != nil {
 		return "", err
 	}
@@ -73,6 +76,7 @@ func command_store(cs *FtpSession, filename string, useUnique bool, useBinary bo
 			return "", err
 		}
 	}
+	cs.release_connection()
 	result, err := readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err

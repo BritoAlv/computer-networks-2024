@@ -1,17 +1,11 @@
 package main
 
-
 import (
 	"encoding/json"
 	"net/http"
 )
 
-type FileTransferRequest struct {
-	Source string `json:"source"`
-	Destination string  `json:"destination"`
-}
-
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
+func uploadDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -31,13 +25,14 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.PUT(request.Source + "&" + request.Destination + "/" + get_filename_path(request.Source))
+	_, err = ftpSession.RPUT(request.Source + "&" + request.Destination)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	SessionFinish(ftpSession)
-	js, err := json.Marshal(ResponseConnect{"File uploaded", true})
+	
+	js, err := json.Marshal(ResponseConnect{"Directory Uploaded", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

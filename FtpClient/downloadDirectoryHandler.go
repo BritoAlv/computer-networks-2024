@@ -25,7 +25,7 @@ func downloadDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.RGET(request.Source)
+	_, err = ftpSession.RGET(request.Source + "&" + request.Destination)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

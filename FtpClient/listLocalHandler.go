@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 )
 
 func listLocalHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,20 +20,10 @@ func listLocalHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	entries, err := os.ReadDir(request.Path)
+	folders, files, err := get_files_folders_local(request.Path)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	}
-
-	var folders = make([]string, 0)
-	var files = make([]string, 0)
-	for _, entry := range entries {
-		if entry.IsDir() {
-			folders = append(folders, entry.Name())
-		} else {
-			files = append(files, entry.Name())
-		}
 	}
 	js, err := json.Marshal(ListResponse{folders, files, true})
 	if err != nil {

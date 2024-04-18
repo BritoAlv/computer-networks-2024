@@ -8,7 +8,6 @@ func (cs *FtpSession) NLST(input string) (string, error) {
 
 	// Enter Passive Mode
 	err := cs.check_connection()
-	defer cs.release_connection()
 	if err != nil {
 		return "", err
 	}
@@ -21,7 +20,7 @@ func (cs *FtpSession) NLST(input string) (string, error) {
 	if dataErr != nil {
 		return "", dataErr
 	}
-
+	cs.release_connection()
 	_, doneErr := readOnMemoryDefault(cs)
 	if doneErr != nil {
 		return "", doneErr

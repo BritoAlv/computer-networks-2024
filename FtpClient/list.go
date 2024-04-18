@@ -5,7 +5,6 @@ import (
 )
 
 func (cs *FtpSession) LS(path string) (string, error) {
-	defer cs.release_connection()
 	// first try yo establish a PASSIVE Connection Data.
 	err := cs.check_connection()
 	if err != nil {
@@ -19,6 +18,7 @@ func (cs *FtpSession) LS(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	cs.release_connection()
 	_, err = readOnMemoryDefault(cs)
 	if err != nil {
 		return "", err
