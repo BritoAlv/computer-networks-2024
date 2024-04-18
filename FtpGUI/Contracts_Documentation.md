@@ -73,7 +73,7 @@ Endpoint para manejar el estado de las operaciones realizadas sobre el servidor.
 
 etc...
 
-## GET url/list/local
+## POST url/list/local
 
 Endpoint para listar el directorio local
 

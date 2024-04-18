@@ -12,7 +12,7 @@ type ListRequest struct {
 type ListResponse struct {
 	Directories []string `json:"directories"`
 	Files       []string `json:"files"`
-	Succesful   bool     `json:"succesful"`
+	Successful   bool     `json:"successful"`
 }
 
 func listServerHandler(w http.ResponseWriter, r *http.Request) {

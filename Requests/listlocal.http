@@ -1,0 +1,6 @@
+POST http://localhost:5035/list/local
+Content-Type: application/json
+
+{
+    "Path" : "/home/alvaro/proyectos/"
+}
