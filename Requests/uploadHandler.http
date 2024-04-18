@@ -1,7 +1,0 @@
-POST http://localhost:5035/list/local
-Content-Type: application/json
-
-{
-    "source" : "/home/alvaro/proyectos/travel_agency/backend/README.md",
-    "destination" : "/upload"
-}

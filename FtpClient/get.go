@@ -23,7 +23,8 @@ func command_get(cs *FtpSession, pathname string, useBinary bool) (string, error
 	defer cs.release_connection()
 	parts := strings.Split(pathname, "/")
 	filename := parts[len(parts)-1]
-	file, _ := os.Create(filename)
+	os.Mkdir("RGET", 0777)
+	file, _ := os.Create("./RGET/"+filename)
 	err := cs.check_connection()
 	if err != nil {
 		return "", err

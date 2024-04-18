@@ -27,8 +27,8 @@ func listLocalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var folders []string
-	var files []string
+	var folders = make([]string, 0)
+	var files = make([]string, 0)
 	for _, entry := range entries {
 		if entry.IsDir() {
 			folders = append(folders, entry.Name())

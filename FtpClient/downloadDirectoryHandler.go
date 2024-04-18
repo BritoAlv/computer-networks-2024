@@ -31,9 +31,7 @@ func downloadDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	SessionFinish(ftpSession)
-	/*
-	to-do : copy the directory to the destination folder.
-	*/
+	
 	js, err := json.Marshal(ResponseConnect{"Directory Downloaded", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
