@@ -1,11 +1,9 @@
 package main
 
-
 import (
 	"encoding/json"
 	"net/http"
 )
-
 
 func downloadDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
@@ -33,8 +31,10 @@ func downloadDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	SessionFinish(ftpSession)
-	
-	js, err := json.Marshal(ResponseConnect{"Directory Deleted", true})
+	/*
+	to-do : copy the directory to the destination folder.
+	*/
+	js, err := json.Marshal(ResponseConnect{"Directory Downloaded", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
