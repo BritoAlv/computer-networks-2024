@@ -1,0 +1,10 @@
+POST http://localhost:5035/connect
+Content-Type: application/json
+
+{
+  "IpAddress": "127.0.0.1",
+  "UserName": "brito",
+  "Password": "password",
+  "Port": "21"
+}
+

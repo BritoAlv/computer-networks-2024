@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"net"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -177,4 +178,10 @@ func CheckResponseNumber(code string) error {
 		return nil
 	}
 	return errors.New(message[1])
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "*")
+	(*w).Header().Set("Access-Control-Allow-Headers", "*")
 }

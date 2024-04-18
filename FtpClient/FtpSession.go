@@ -89,3 +89,5 @@ func (cs *FtpSession) release_connection() {
 	cs.connectionData = nil
 	cs.connDataUsed = false
 }
+
+

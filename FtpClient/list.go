@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 func (cs *FtpSession) LS(path string) (string, error) {
 	defer cs.release_connection()
@@ -23,3 +25,4 @@ func (cs *FtpSession) LS(path string) (string, error) {
 	}
 	return data, nil
 }
+
