@@ -2,5 +2,5 @@ POST http://localhost:5035/directories/create
 Content-Type: application/json
 
 {
-    "path" : "/upload/PicsArt"
+    "path" : "/upload/asa/b"
 }

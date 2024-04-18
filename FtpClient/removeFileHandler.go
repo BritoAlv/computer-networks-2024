@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"encoding/json"
 	"net/http"
@@ -27,13 +26,13 @@ func removeFileHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.DELE(request.Path)
+	stat, err := ftpSession.DELE(request.Path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	SessionFinish(ftpSession)
-	
+	StatusQueue.Enqueue(stat)
 	js, err := json.Marshal(ResponseConnect{"File Deleted", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

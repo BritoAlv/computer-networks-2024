@@ -1,0 +1,6 @@
+POST http://localhost:5035/files/remove
+Content-Type: application/json
+
+{
+    "path" : "/upload/README.md"
+}

@@ -25,12 +25,13 @@ func uploadDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.RPUT(request.Source + "&" + request.Destination)
+	stat, err := ftpSession.RPUT(request.Source + "&" + request.Destination)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	SessionFinish(ftpSession)
+	StatusQueue.Enqueue(stat)
 	
 	js, err := json.Marshal(ResponseConnect{"Directory Uploaded", true})
 	if err != nil {

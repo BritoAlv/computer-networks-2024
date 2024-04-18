@@ -31,12 +31,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.PUT(request.Source + "&" + request.Destination + "/" + get_filename_path(request.Source))
+	stat, err := ftpSession.PUT(request.Source + "&" + request.Destination + "/" + get_filename_path(request.Source))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	SessionFinish(ftpSession)
+	StatusQueue.Enqueue(stat)
 	js, err := json.Marshal(ResponseConnect{"File uploaded", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

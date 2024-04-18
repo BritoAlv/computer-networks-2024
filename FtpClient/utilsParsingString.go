@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func get_files_folders_local(path string ) ([]string, []string, error) {
+func get_files_folders_local(path string) ([]string, []string, error) {
 	entries, err := os.ReadDir(path)
 	var folders = make([]string, 0)
 	var files = make([]string, 0)
@@ -15,32 +15,34 @@ func get_files_folders_local(path string ) ([]string, []string, error) {
 		return folders, files, err
 	}
 	for _, entry := range entries {
-		if entry.IsDir() {
-			folders = append(folders, entry.Name())
-		} else {
-			files = append(files, entry.Name())
+		if entry.Name()[0] != '.' {
+			if entry.IsDir() {
+				folders = append(folders, entry.Name())
+			} else {
+				files = append(files, entry.Name())
+			}
 		}
 	}
 	return folders, files, nil
 }
 
-func get_filename_path(path string) (string) {
+func get_filename_path(path string) string {
 	parts := strings.Split(path, "/")
 	return parts[len(parts)-1]
 }
 
-func SplitString(s string, c byte) ([]string){
+func SplitString(s string, c byte) []string {
 	res := make([]string, 0)
 	for i := 0; i < len(s); i++ {
 		if s[i] != c {
 			start := i
-			j := i+1
+			j := i + 1
 			for ; j < len(s); j++ {
 				if s[j] == c {
 					break
 				}
 			}
-			res = append(res, s[start : j])
+			res = append(res, s[start:j])
 			i = j
 		}
 	}
@@ -66,18 +68,18 @@ func parse_get_connection_ftp(input string) (string, string) {
 func get_files_folders_current(cs *FtpSession, path string) ([]string, []string, error) {
 	response1, err := cs.LS(path)
 	if err != nil {
-		return []string{}, []string{}, errors.New("something is wrong with LS " +  path + " " + err.Error())
+		return []string{}, []string{}, errors.New("something is wrong with LS " + path + " " + err.Error())
 	}
 	response2, err := cs.NLST(path)
 	if err != nil {
-		return []string{}, []string{}, errors.New("something is wrong with NLST " +  path + " " + err.Error())
+		return []string{}, []string{}, errors.New("something is wrong with NLST " + path + " " + err.Error())
 	}
 	archives1 := strings.Split(response1, "\n")
 	archives2 := strings.Split(response2, "\n")
 	if len(archives1) != len(archives2) {
 		return []string{}, []string{}, errors.New("LS and NLST didn't return the same " + path)
 	}
-	
+
 	archivesFiltered1 := []string{}
 	archivesFiltered2 := []string{}
 	for index, arch := range archives1 {
@@ -96,7 +98,7 @@ func get_files_folders_current(cs *FtpSession, path string) ([]string, []string,
 			filename := parts[len(parts)-1]
 			filename = filename[:len(filename)-1]
 			if arch[0] == 'd' {
-				folders = append(folders, filename)				
+				folders = append(folders, filename)
 			} else {
 				files = append(files, filename)
 			}

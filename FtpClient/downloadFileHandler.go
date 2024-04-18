@@ -25,14 +25,13 @@ func downloadFileHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.GET(request.Source + "&" + request.Destination)
+	stat, err := ftpSession.GET(request.Source + "&" + request.Destination)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	SessionFinish(ftpSession)
-
-	
+	StatusQueue.Enqueue(stat)
 	js, err := json.Marshal(ResponseConnect{"File downloaded", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

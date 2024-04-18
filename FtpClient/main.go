@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-
+var StatusQueue Queue = *NewQueue()
 
 func main() {
 	http.HandleFunc("/connect", connectHandler)

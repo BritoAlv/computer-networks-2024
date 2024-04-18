@@ -18,6 +18,17 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
+
+	if StatusQueue.list.Len() != 0 {
+		js, err := json.Marshal(ResponseStatus{StatusQueue.Dequeue()})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(js)
+	}
+
 	if default_session == nil {
 		js, err := json.Marshal(ResponseConnect{"Not connected", false})
 		if err != nil {
@@ -28,7 +39,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(js)
 		return
 	}
-	_, err := default_session.NOOP("")
+	stat, err := default_session.NOOP("")
 	if err != nil {
 		js, err := json.Marshal(ResponseConnect{"Not connected", false})
 		if err != nil {
@@ -38,8 +49,8 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
 		return
-
 	}
+	StatusQueue.Enqueue(stat)
 	js, err := json.Marshal(ResponseStatus{"Connected"})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

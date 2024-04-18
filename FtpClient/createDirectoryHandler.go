@@ -27,11 +27,12 @@ func createDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_, err = ftpSession.MKD(request.Path)
+	stat, err := ftpSession.MKD(request.Path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	StatusQueue.Enqueue(stat)
 	SessionFinish(ftpSession)
 	
 	js, err := json.Marshal(ResponseConnect{"Directory Created", true})

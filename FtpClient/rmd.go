@@ -25,6 +25,5 @@ func RMD_Recursive(cs *FtpSession, directory string) (string, error) {
 			return "", err
 		}
 	}
-
 	return writeAndreadOnMemory(cs, "RMD "+ directory)
 }
