@@ -6,7 +6,7 @@ export class Directory {
         this.parent = null;
         this.directories = [];
         this.files = [];
-        this.display = true;
+        this.display = false;
     }
 }
 
@@ -25,7 +25,8 @@ export class File {
 export class DirectoryTree {
     constructor() {
         this.root = new Directory("root");
-        this.root.path = "/"
+        this.root.path = "/";
+        this.root.display = true;
     }
 
     findDirectory(directoryId) {
@@ -173,8 +174,10 @@ export class DirectoryTree {
         let directories = "";
         let files = ""
 
-        for (const dir of directory.directories) {
-            directories += this.#toHtml(dir);
+        if (directory.display) {
+            for (const dir of directory.directories) {
+                directories += this.#toHtml(dir);
+            }
         }
 
         if (directory.display)
@@ -182,7 +185,7 @@ export class DirectoryTree {
                 // Add i to id to make it a valid one
                 files += `<li class="file-item" id="i${f.id}">🔷 ${f.name}</li>`;
             });
-        
+
         const directoryIcon = directory.display ? `📂` : `📁`;
 
         // Add i to id to make it a valid one

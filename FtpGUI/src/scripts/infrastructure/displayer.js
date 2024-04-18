@@ -162,8 +162,8 @@ export class Displayer {
             return;
         }
 
-        const source = this.#localDirectoryTree.findFile(selected.localFile.substr(1)).path();
-        const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
+        const source = this.#localDirectoryTree.findFile(selected.localFile.substring(1)).path();
+        const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substring(1)).path;
 
         const request = new TransferRequest(source, destination);
         const response = await this.#requester.post(this.#apiUrl + "files/upload", request);
@@ -177,8 +177,8 @@ export class Displayer {
             return;
         }
 
-        const source = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
-        const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
+        const source = this.#localDirectoryTree.findDirectory(selected.localDirectory.substring(1)).path;
+        const destination = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substring(1)).path;
 
         const request = new TransferRequest(source, destination);
         const response = await this.#requester.post(this.#apiUrl + "directories/upload", request);
@@ -192,8 +192,8 @@ export class Displayer {
             return;
         }
 
-        const source = this.#serverDirectoryTree.findFile(selected.serverFile.substr(1)).path();
-        const destination = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
+        const source = this.#serverDirectoryTree.findFile(selected.serverFile.substring(1)).path();
+        const destination = this.#localDirectoryTree.findDirectory(selected.localDirectory.substring(1)).path;
 
         const request = new TransferRequest(source, destination);
         const response = await this.#requester.post(this.#apiUrl + "files/download", request);
@@ -207,8 +207,8 @@ export class Displayer {
             return;
         }
 
-        const source = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1)).path;
-        const destination = this.#localDirectoryTree.findDirectory(selected.localDirectory.substr(1)).path;
+        const source = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substring(1)).path;
+        const destination = this.#localDirectoryTree.findDirectory(selected.localDirectory.substring(1)).path;
 
         const request = new TransferRequest(source, destination);
         const response = await this.#requester.post(this.#apiUrl + "directories/download", request);
@@ -222,7 +222,7 @@ export class Displayer {
             return;
         }
 
-        await this.displayLocalDirectory(selected.localDirectory.substr(1));
+        await this.displayLocalDirectory(selected.localDirectory.substring(1));
 
         // Reset selected items
         selected.localFile = undefined;
@@ -236,7 +236,7 @@ export class Displayer {
             return;
         }
 
-        await this.displayServerDirectory(selected.serverDirectory.substr(1));
+        await this.displayServerDirectory(selected.serverDirectory.substring(1));
 
         // Reset selected items
         selected.serverFile = undefined;
@@ -249,7 +249,7 @@ export class Displayer {
             return;
         }
 
-        const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1));
+        const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substring(1));
         const path = `${directory.path}${directoryName}/`;
         const request = new PathRequest(path);
         const response = await this.#requester.post(this.#apiUrl + "directories/create", request);
@@ -270,7 +270,7 @@ export class Displayer {
             return;
         }
 
-        const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substr(1));
+        const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substring(1));
         const path = directory.path;
         const request = new PathRequest(path);
         const response = await this.#requester.post(this.#apiUrl + "directories/remove", request);
@@ -292,7 +292,7 @@ export class Displayer {
             return;
         }
 
-        const file = this.#serverDirectoryTree.findFile(selected.serverFile.substr(1));
+        const file = this.#serverDirectoryTree.findFile(selected.serverFile.substring(1));
         const path = file.path();
         const request = new PathRequest(path);
         const response = await this.#requester.post(this.#apiUrl + "files/remove", request);
@@ -355,7 +355,7 @@ export class Displayer {
 
         directoryItems.forEach(item => {
             item.addEventListener("click", () => {
-                if(selected.localDirectory == item.id) {
+                if (selected.localDirectory == item.id) {
                     item.className = `directory-item`;
                     selected.localDirectory = undefined;
                     return;
@@ -371,6 +371,16 @@ export class Displayer {
                 item.className += " selected-directory";
             });
         });
+
+        directoryItems.forEach(item => {
+            item.addEventListener("dblclick", () => {
+                const directory = this.#localDirectoryTree.findDirectory(item.id.substring(1));
+
+                directory.display = !directory.display;
+
+                this.displayLocalDirectory(directory.id);
+            });
+        })
     }
 
     #setServerDirectoryEvents() {
@@ -397,7 +407,7 @@ export class Displayer {
 
         directoryItems.forEach(item => {
             item.addEventListener("click", () => {
-                if(selected.serverDirectory == item.id) {
+                if (selected.serverDirectory == item.id) {
                     item.className = `directory-item`;
                     selected.serverDirectory = undefined;
                     return;
@@ -413,5 +423,15 @@ export class Displayer {
                 item.className += " selected-directory";
             });
         });
+
+        directoryItems.forEach(item => {
+            item.addEventListener("dblclick", () => {
+                const directory = this.#serverDirectoryTree.findDirectory(item.id.substring(1));
+
+                directory.display = !directory.display;
+
+                this.displayServerDirectory(directory.id);
+            });
+        })
     }
 }

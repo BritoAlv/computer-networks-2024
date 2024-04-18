@@ -7,12 +7,25 @@ h1 {
     text-align: center;
 }
 
-label, input, li {
+label,
+input,
+li {
     font-size: 1.2rem;
 }
 
 ul {
     list-style-type: none;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
 }
 
 .connection-container {
@@ -36,7 +49,8 @@ ul {
     justify-content: space-evenly;
 }
 
-.server-directory, .local-directory {
+.server-directory,
+.local-directory {
     width: 100%;
 }
 
@@ -44,7 +58,8 @@ ul {
     height: 5em;
 }
 
-#local-directory, #server-directory {
+#local-directory,
+#server-directory {
     height: 25em;
 }
 
@@ -52,14 +67,8 @@ ul {
     overflow: auto;
 }
 
-/* .local-button-container, .server-button-container {
-    display: flex;  
-} */
-
+.selected-file,
 .selected-directory {
-    background-color: tomato;
-}
-
-.selected-file {
-    background-color: skyblue;
+    color: grey;
+    font-size: 1.5em;
 }
