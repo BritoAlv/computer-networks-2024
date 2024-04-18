@@ -10,76 +10,80 @@
 </head>
 
 <body>
-    <div class="container connection-setup">
-        <div class="ip-address-container">
-            <label>IP Address</label>
-            <input type="text" id="ip-address">
+    <div class="connection-container">
+        <div class="container connection-setup">
+            <div class="ip-address-container">
+                <label>IP Address</label>
+                <input type="text" id="ip-address">
+            </div>
+    
+            <div class="port-container">
+                <label>Port</label>
+                <input type="text" id="port">
+            </div>
+    
+            <div class="user-name-container">
+                <label>User</label>
+                <input type="text" id="user-name">
+            </div>
+    
+            <div class="password-container">
+                <label>Password</label>
+                <input type="text" id="password">
+            </div>
+    
+            <div class="connect-button-container">
+                <input type="button" value="connect" id="connect-button">
+            </div>
+    
+            <div class="close-button-container">
+                <input type="button" value="close" id="close-button">
+            </div>
         </div>
-
-        <div class="port-container">
-            <label>Port</label>
-            <input type="text" id="port">
-        </div>
-
-        <div class="user-name-container">
-            <label>User</label>
-            <input type="text" id="user-name">
-        </div>
-
-        <div class="password-container">
-            <label>Password</label>
-            <input type="text" id="password">
-        </div>
-
-        <div class="connect-button-container">
-            <input type="button" value="connect" id="connect-button">
-        </div>
-
-        <div class="close-button-container">
-            <input type="button" value="close" id="close-button">
-        </div>
-    </div>
-
-
-    <div class="container connection-status">
-        <h1>Connection Status</h1>
-
-        <div id="status" class="scrollable">
-
-        </div>
-    </div>
-
-
-    <div class="container local-directory">
-        <h1>Local directory</h1>
-
-        <div id="local-directory" class="scrollable">
-
-        </div>
-
-        <div class="local-button-container">
-            <input type="button" value="Upload File" id="upload-file-button">
-            <input type="button" value="Upload Directory" id="upload-directory-button">
-            <input type="button" value="Refresh" id="local-refresh">
+    
+    
+        <div class="container connection-status">
+            <h1>Connection Status</h1>
+    
+            <div id="status" class="scrollable">
+    
+            </div>
         </div>
     </div>
 
 
-    <div class="container server-directory">
-        <h1>Server directory</h1>
-
-        <div id="server-directory" class="scrollable">
-
+    <div class="directories-container">
+        <div class="container local-directory">
+            <h1>Local directory</h1>
+    
+            <div id="local-directory" class="scrollable">
+    
+            </div>
+    
+            <div class="local-button-container">
+                <input type="button" value="Upload File" id="upload-file-button">
+                <input type="button" value="Upload Directory" id="upload-directory-button">
+                <input type="button" value="Refresh" id="local-refresh">
+            </div>
         </div>
-
-        <div class="server-button-container">
-            <input type="text" id="create-directory-input">
-            <input type="button" value="Create directory" id="create-directory-button">
-            <input type="button" value="Remove directory" id="remove-directory-button">
-            <input type="button" value="Download directory" id="download-directory-button">
-            <input type="button" value="Download file" id="download-file-button">
-            <input type="button" value="Remove file" id="remove-file-button">
-            <input type="button" value="Refresh" id="server-refresh">
+    
+    
+        <div class="container server-directory">
+            <h1>Server directory</h1>
+    
+            <div id="server-directory" class="scrollable">
+    
+            </div>
+    
+            <div class="server-button-container">
+                <input type="text" id="create-directory-input">
+                <input type="button" value="Create directory" id="create-directory-button">
+                <input type="button" value="Remove directory" id="remove-directory-button">
+                <input type="button" value="Download directory" id="download-directory-button">
+                <input type="button" value="Download file" id="download-file-button">
+                <input type="button" value="Remove file" id="remove-file-button">
+                <input type="button" value="Refresh" id="server-refresh">
+            </div>
         </div>
     </div>
 </body>
