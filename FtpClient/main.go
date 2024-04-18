@@ -1,22 +1,25 @@
 package main
 
 import (
+	"FTPClient/api"
 	"net/http"
 )
 
-var StatusQueue Queue = *NewQueue()
+func run_web_gui() {
+	http.HandleFunc("/connect", api.ConnectHandler)
+	http.HandleFunc("/list/server", api.ListServerHandler)
+	http.HandleFunc("/list/local", api.ListLocalHandler)
+	http.HandleFunc("/status", api.StatusHandler)
+	http.HandleFunc("/files/upload", api.UploadFileHandler)
+	http.HandleFunc("/files/download", api.DownloadFileHandler)
+	http.HandleFunc("/files/remove", api.RemoveFileHandler)
+	http.HandleFunc("/directories/create", api.CreateDirectoryHandler)
+	http.HandleFunc("/directories/remove", api.RemoveDirectoryHandler)
+	http.HandleFunc("/directories/download", api.DownloadDirectoryHandler)
+	http.HandleFunc("/directories/upload", api.UploadDirectoryHandler)
+	http.ListenAndServe(":5035", nil)
+}
 
 func main() {
-	http.HandleFunc("/connect", connectHandler)
-	http.HandleFunc("/list/server", listServerHandler)
-	http.HandleFunc("/list/local", listLocalHandler)
-	http.HandleFunc("/status", statusHandler)
-	http.HandleFunc("/files/upload", uploadHandler)
-	http.HandleFunc("/files/download", downloadFileHandler)
-	http.HandleFunc("/files/remove", removeFileHandler)	
-	http.HandleFunc("/directories/create", createDirectoryHandler)
-	http.HandleFunc("/directories/remove", removeDirectoryHandler)
-	http.HandleFunc("/directories/download", downloadDirectoryHandler)
-	http.HandleFunc("/directories/upload", uploadDirectoryHandler)
-	http.ListenAndServe(":5035", nil)
+	run_web_gui()
 }
