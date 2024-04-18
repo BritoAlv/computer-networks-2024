@@ -23,6 +23,7 @@ ul {
 
 .connection-status {
     flex: 2;
+    border-left: gray solid 0.5em;
 }
 
 .connection-setup {

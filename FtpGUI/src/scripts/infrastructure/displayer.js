@@ -87,13 +87,29 @@ export class Displayer {
                 this.#serverDirectoryTree.insertDirectory(directoryId, dir);
         });
 
+        // Remove nonexisting directories
+        const directoriesToRemove = directory.directories.filter(dir => !response.directories.includes(dir.name)).map(dir => dir.id);
+
+        directoriesToRemove.forEach(dir => {
+            this.#serverDirectoryTree.removeDirectory(dir);
+        });
+
         // Insert files into directory tree
         response.files.forEach(f => {
             if (!directory.files.map(fp => fp.name).includes(f))
                 this.#serverDirectoryTree.insertFile(directoryId, f);
         });
 
+        // Remove nonexisting files
+        const filesToRemove = directory.files.filter(f => !response.files.includes(f.name)).map(f => f.id);
+
+        filesToRemove.forEach(f => {
+            this.#localDirectoryTree.removeFile(f);
+        });
+
         this.#setServerDirectoryHtml();
+
+        this.#displayStatus("Directory successfully listed");
     }
 
     async displayLocalDirectory(directoryId = undefined) {
@@ -117,10 +133,24 @@ export class Displayer {
                 this.#localDirectoryTree.insertDirectory(directoryId, dir);
         });
 
+        // Remove nonexisting directories
+        const directoriesToRemove = directory.directories.filter(dir => !response.directories.includes(dir.name)).map(dir => dir.id);
+
+        directoriesToRemove.forEach(dir => {
+            this.#localDirectoryTree.removeDirectory(dir);
+        });
+
         // Insert files into directory tree
         response.files.forEach(f => {
             if (!directory.files.map(fp => fp.name).includes(f))
                 this.#localDirectoryTree.insertFile(directoryId, f);
+        });
+
+        // Remove nonexisting files
+        const filesToRemove = directory.files.filter(f => !response.files.includes(f.name)).map(f => f.id);
+
+        filesToRemove.forEach(f => {
+            this.#localDirectoryTree.removeFile(f);
         });
 
         this.#setLocalDirectoryHtml();
@@ -193,6 +223,11 @@ export class Displayer {
         }
 
         await this.displayLocalDirectory(selected.localDirectory.substr(1));
+
+        // Reset selected items
+        selected.localFile = undefined;
+        selected.localDirectory = undefined;
+
     }
 
     async refreshServer() {
@@ -202,6 +237,10 @@ export class Displayer {
         }
 
         await this.displayServerDirectory(selected.serverDirectory.substr(1));
+
+        // Reset selected items
+        selected.serverFile = undefined;
+        selected.serverDirectory = undefined;
     }
 
     async createDirectory(directoryName) {
