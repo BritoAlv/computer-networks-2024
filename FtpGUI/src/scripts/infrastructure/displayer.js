@@ -74,9 +74,9 @@ export class Displayer {
         const path = directory.path;
 
         const request = new PathRequest(path);
-        const response = await this.#requester.post(this.#apiUrl+"list/server", request);
+        const response = await this.#requester.post(this.#apiUrl + "list/server", request);
 
-        if(!response.successful) {
+        if (!response.successful) {
             this.#displayStatus("Error while listing directory");
             return;
         }
@@ -104,9 +104,9 @@ export class Displayer {
         const path = directory.path;
 
         const request = new PathRequest(path);
-        const response = await this.#requester.post(this.#apiUrl+"list/local", request);
+        const response = await this.#requester.post(this.#apiUrl + "list/local", request);
 
-        if(!response.successful) {
+        if (!response.successful) {
             this.#displayStatus("Error while listing directory");
             return;
         }
@@ -297,6 +297,11 @@ export class Displayer {
         const directoryItems = document.querySelectorAll("#local-directory .directory-item");
         fileItems.forEach(item => {
             item.addEventListener("click", () => {
+                if (selected.localFile == item.id) {
+                    item.className = `file-item`;
+                    selected.localFile = undefined;
+                    return;
+                }
 
                 // Remove select-file class from previously selected file
                 if (selected.localFile != undefined) {
@@ -311,6 +316,11 @@ export class Displayer {
 
         directoryItems.forEach(item => {
             item.addEventListener("click", () => {
+                if(selected.localDirectory == item.id) {
+                    item.className = `directory-item`;
+                    selected.localDirectory = undefined;
+                    return;
+                }
 
                 // Remove select-directory class from previously selected directory
                 if (selected.localDirectory != undefined) {
@@ -329,6 +339,11 @@ export class Displayer {
         const directoryItems = document.querySelectorAll("#server-directory .directory-item");
         fileItems.forEach(item => {
             item.addEventListener("click", () => {
+                if (selected.serverFile == item.id) {
+                    item.className = `file-item`;
+                    selected.serverFile = undefined;
+                    return;
+                }
 
                 // Remove select-file class from previously selected file
                 if (selected.serverFile != undefined) {
@@ -343,6 +358,11 @@ export class Displayer {
 
         directoryItems.forEach(item => {
             item.addEventListener("click", () => {
+                if(selected.serverDirectory == item.id) {
+                    item.className = `directory-item`;
+                    selected.serverDirectory = undefined;
+                    return;
+                }
 
                 // Remove select-directory class from previously selected directory
                 if (selected.serverDirectory != undefined) {

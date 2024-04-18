@@ -22,6 +22,7 @@ export function connectionSetupComponent() {
 
     function cleanInputs() {
         ipAddress.value = "";
+        port.value = "";
         userName.value = "";
         password.value = "";
     }
