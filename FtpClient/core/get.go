@@ -25,9 +25,8 @@ func (cs *FtpSession) GET(arg string) (string, error) {
 }
 
 func command_get(cs *FtpSession, pathnameS string, pathnameD string , useBinary bool) (string, error) {
-	parts := strings.Split(pathnameS, "/")
-	filename := parts[len(parts)-1]
-	file, _ := os.Create(pathnameD+filename)
+	filename := Get_filename_path(pathnameS)
+	file, _ := os.Create(pathnameD + "/" + filename)
 	err := cs.check_connection()
 	if err != nil {
 		cs.release_connection()

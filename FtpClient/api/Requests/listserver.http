@@ -2,5 +2,5 @@ POST http://localhost:5035/list/server
 Content-Type: application/json
 
 {
-    "Path" : "/upload/Telegram Desktop"
+    "Path" : "/upload"
 }

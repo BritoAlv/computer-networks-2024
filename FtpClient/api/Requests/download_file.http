@@ -2,6 +2,6 @@ POST http://localhost:5035/files/download
 Content-Type: application/json
 
 {
-    "source" : "LICENSE2",
-    "destination" : "/home/alvaro/proyectos/"
+    "source" : "/upload/ProfessionalMARS Tutorial.doc",
+    "destination" : "/home/alvaro/Documents/Flutter"
 }
