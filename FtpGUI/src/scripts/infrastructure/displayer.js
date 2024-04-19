@@ -250,7 +250,7 @@ export class Displayer {
         }
 
         const directory = this.#serverDirectoryTree.findDirectory(selected.serverDirectory.substring(1));
-        const path = `${directory.path}${directoryName}/`;
+        const path = `${directory.path}/${directoryName}`;
         const request = new PathRequest(path);
         const response = await this.#requester.post(this.#apiUrl + "directories/create", request);
 
