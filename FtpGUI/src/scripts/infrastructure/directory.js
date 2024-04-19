@@ -18,7 +18,7 @@ export class File {
     }
 
     path() {
-        return `${this.directory.path}${this.name}`
+        return `${this.directory.path}/${this.name}`
     }
 }
 
@@ -119,7 +119,7 @@ export class DirectoryTree {
     #insertDirectory(parent, parentId, directoryName, path) {
         if (parent.id == parentId) {
             const directory = new Directory(directoryName);
-            directory.path = `${path}${directoryName}/`
+            directory.path = `${path}${directoryName}`
             directory.parent = parent;
             parent.directories.push(directory);
             return true;
