@@ -30,7 +30,8 @@ func execute_command(command string, X *core.FtpSession) {
 
 	result, _ := resultCommand[0].Interface().(string)
 
-	fmt.Println("Command Says : " + result)
+	fmt.Println("Command Says : ")
+	fmt.Println(result)
 	if !resultCommand[1].IsNil() {
 		resultError, _ := resultCommand[1].Interface().(error)
 		fmt.Println("Also : " + resultError.Error())
@@ -56,11 +57,29 @@ func writePart(commandCh chan string, X *core.FtpSession) {
 }
 
 func StartConsole() {
-	ftptouse := core.Local
+	var ip, port, user, password string
+
+	fmt.Print("IP: ")
+	fmt.Scanln(&ip)
+
+	fmt.Print("PORT: ")
+	fmt.Scanln(&port)
+
+	fmt.Print("USER: ")
+	fmt.Scanln(&user)
+
+	fmt.Print("PASSWORD: ")
+	fmt.Scanln(&password)
+	ftptouse := core.FTPExample{
+		Ip: ip,
+		Port: port,
+		User: user,
+		Password: password,
+	}
 
 	session, err := core.SessionBuilder(ftptouse)
 	if err != nil {
-		return 
+		return
 	}
 	commandCh := make(chan string)
 

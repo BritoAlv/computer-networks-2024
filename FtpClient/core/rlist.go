@@ -10,7 +10,11 @@ func (cs *FtpSession) RNLS(path string) (string, error) {
 	if len(split) >= 2 || len(split) == 0 {
 		return "", errors.New("wrong Argument Format: rnls (path)*")
 	}
-	return recLS(cs, split[0], 0, "")
+	actual, err := cs.PWD("")
+	if err != nil {
+		return "", err
+	}
+	return recLS(cs, actual + "/" + split[0], 0, "")
 }
 
 func recLS(cs *FtpSession, path string, i int, prev string) (string, error) {
