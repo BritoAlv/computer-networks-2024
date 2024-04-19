@@ -44,7 +44,9 @@ func SessionBuilder(exam FTPExample) (*FtpSession, error) {
 }
 
 func SessionFinish(cs *FtpSession) {
-	(*cs.connectionConfig).Close()
+	if cs.connectionConfig != nil {
+		(*cs.connectionConfig).Close()
+	}
 }
 
 func (cs *FtpSession) check_connectionPort(connData *net.Conn) error {

@@ -2,6 +2,6 @@ POST http://localhost:5035/files/upload
 Content-Type: application/json
 
 {
-    "source" : "/home/alvaro/proyectos/cs/README.md",
-    "destination" : "/upload"
+    "source" : "/home/alvaro/proyectos/cs/competitive_programming/R900/TeaTangerines.cpp",
+    "destination" : "/upload/alvaro"
 }

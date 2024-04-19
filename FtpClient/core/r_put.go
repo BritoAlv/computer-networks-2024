@@ -2,10 +2,11 @@ package core
 
 import (
 	"errors"
+	"strings"
 )
 
 func (cs *FtpSession) RPUT(path string) (string, error) {
-	parts := SplitString(path, '&')
+	parts := strings.Split(strings.TrimSpace(path), Separator)
 	if len(parts) == 1 || parts[1] == "" {
 		return "", errors.New("wrong arguments")
 	}
@@ -23,7 +24,7 @@ func (cs *FtpSession) rPUT(directorySource string, directoryDestination string) 
 		return "", err
 	}
 	for _, file := range files {
-		_, err = cs.PUT(directorySource + "/" + file + "&" + current_folder_path + "/" + file)
+		_, err = cs.PUT(directorySource + "/" + file + Separator + current_folder_path + "/" + file)
 		if err != nil {
 			return "", err
 		}

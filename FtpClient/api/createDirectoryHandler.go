@@ -1,10 +1,9 @@
 package api
 
-
 import (
+	"FTPClient/core"
 	"encoding/json"
 	"net/http"
-	"FTPClient/core"
 )
 
 
@@ -17,7 +16,7 @@ func CreateDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
-	var request ListRequest
+	var request PathRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -25,22 +24,19 @@ func CreateDirectoryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	ftpSession, err := core.SessionBuilder(ftp_to_use)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
 	stat, err := ftpSession.MKD(request.Path)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
 	StatusQueue.Enqueue(stat)
 	core.SessionFinish(ftpSession)
 	
-	js, err := json.Marshal(ResponseConnect{"Directory Created", true})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	js, _ := json.Marshal(ResponseOperation{"Directory Created", true})
+	responseWrite(&w, js)
 }

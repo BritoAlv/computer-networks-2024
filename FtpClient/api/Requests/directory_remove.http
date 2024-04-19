@@ -2,5 +2,5 @@ POST http://localhost:5035/directories/remove
 Content-Type: application/json
 
 {
-    "path" : "upload/Telegram Desktop"
+    "path" : "upload/alvaro/proyectos"
 }

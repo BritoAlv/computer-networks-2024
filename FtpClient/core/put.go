@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -28,7 +29,8 @@ func (cs *FtpSession) PUT(arg string) (string, error) {
 		arg = strings.TrimSpace(arg[len(ascii_flag):])
 	}
 	arg = strings.TrimSpace(arg)
-	parts := strings.Split(arg, "&")
+	parts := strings.Split(arg, Separator)
+	fmt.Println(parts)
 	if len(parts) == 1 || parts[1] == "" {
 		return "", errors.New("where put the file ")
 	}

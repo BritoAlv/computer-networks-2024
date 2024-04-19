@@ -1,27 +1,17 @@
 package api
 
 import (
+	"FTPClient/core"
 	"encoding/json"
 	"net/http"
-	"FTPClient/core"
 )
 
-type ConnectRequest struct {
-	IpAddress string `json:"ipAddress"`
-	UserName  string `json:"userName"`
-	Password  string `json:"password"`
-	Port      string `json:"port"`
-}
+
 
 var ftp_to_use core.FTPExample
 var default_session *core.FtpSession
 
 var StatusQueue core.Queue = *core.NewQueue()
-
-type ResponseConnect struct {
-	Status    string `json:"status"`
-	Succesful bool   `json:"successful"`
-}
 
 func ConnectHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
@@ -47,15 +37,15 @@ func ConnectHandler(w http.ResponseWriter, r *http.Request) {
 
 	default_session, err  = core.SessionBuilder(ftp_to_use)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
 
-	js, err := json.Marshal(ResponseConnect{"OK", true})
+	js, err := json.Marshal(ResponseOperation{"OK", true})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	responseWrite(&w, js)
 }
