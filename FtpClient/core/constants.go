@@ -8,6 +8,7 @@ const append_flag = "--append"
 const unique_flag = "--unique"
 const binary_flag = "--binary"
 const ascii_flag = "--ascii"
+const Separator = "~"
 
 var FTPErrorMessages = map[string][]string{
 	// GO says that errors should not be capitalized

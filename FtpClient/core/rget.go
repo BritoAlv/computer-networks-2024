@@ -7,7 +7,7 @@ import (
 )
 
 func (cs *FtpSession) RGET(path string) (string, error) {
-	parts := SplitString(path, '&')
+	parts := strings.Split(strings.TrimSpace(path), Separator)
 	if len(parts) == 1 || parts[1] == "" {
 		return cs.rGET("RGET", path)
 	}
@@ -32,7 +32,7 @@ func (cs *FtpSession) rGET(foldername string, path string) (string, error) {
 		}
 	}
 	for _, file := range files {
-		_, err = cs.GET(path + "/" + file + "&" + foldername + "/")
+		_, err = cs.GET(path + "/" + file + Separator + foldername + "/")
 				if err != nil {
 					return "", err
 			}

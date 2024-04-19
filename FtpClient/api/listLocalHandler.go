@@ -1,9 +1,9 @@
 package api
 
 import (
+	"FTPClient/core"
 	"encoding/json"
 	"net/http"
-	"FTPClient/core"
 )
 
 func ListLocalHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +15,7 @@ func ListLocalHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
-	var request ListRequest
+	var request PathRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -23,14 +23,10 @@ func ListLocalHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	folders, files, err := core.Get_files_folders_local(request.Path)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ListResponse{folders, files, false})
+		responseWrite(&w, js)
 		return
 	}
-	js, err := json.Marshal(ListResponse{folders, files, true})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	js, _ := json.Marshal(ListResponse{folders, files, true})
+	responseWrite(&w, js)
 }

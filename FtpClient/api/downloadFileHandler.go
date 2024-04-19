@@ -1,9 +1,9 @@
 package api
 
 import (
+	"FTPClient/core"
 	"encoding/json"
 	"net/http"
-	"FTPClient/core"
 )
 
 func DownloadFileHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,21 +23,18 @@ func DownloadFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	ftpSession, err := core.SessionBuilder(ftp_to_use)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
-	stat, err := ftpSession.GET(request.Source + "&" + request.Destination)
+	stat, err := ftpSession.GET(request.Source + core.Separator + request.Destination)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
 	core.SessionFinish(ftpSession)
 	StatusQueue.Enqueue(stat)
-	js, err := json.Marshal(ResponseConnect{"File downloaded", true})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	js, _ := json.Marshal(ResponseOperation{"File downloaded", true})
+	responseWrite(&w, js)
 }

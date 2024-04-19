@@ -1,16 +1,10 @@
 package api
 
-
 import (
+	"FTPClient/core"
 	"encoding/json"
 	"net/http"
-	"FTPClient/core"
 )
-
-type FileTransferRequest struct {
-	Source string `json:"source"`
-	Destination string  `json:"destination"`
-}
 
 func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
@@ -29,21 +23,18 @@ func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	ftpSession, err := core.SessionBuilder(ftp_to_use)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
-	stat, err := ftpSession.PUT(request.Source + "&" + request.Destination + "/" + core.Get_filename_path(request.Source))
+	stat, err := ftpSession.PUT(request.Source + core.Separator + request.Destination + "/" + core.Get_filename_path(request.Source))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		js, _ := json.Marshal(ResponseOperation{err.Error(), false})
+		responseWrite(&w, js)
 		return
 	}
 	core.SessionFinish(ftpSession)
 	StatusQueue.Enqueue(stat)
-	js, err := json.Marshal(ResponseConnect{"File uploaded", true})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	js, _ := json.Marshal(ResponseOperation{"File uploaded", true})
+	responseWrite(&w, js)
 }

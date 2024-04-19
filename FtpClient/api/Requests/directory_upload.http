@@ -2,6 +2,6 @@ POST http://localhost:5035/directories/upload
 Content-Type: application/json
 
 {
-    "source" : "/home/alvaro/Downloads/Telegram Desktop",
-    "destination" : "/upload"
+    "source" : "/home/alvaro/proyectos",
+    "destination" : "/upload/alvaro"
 }

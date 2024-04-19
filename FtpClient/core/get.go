@@ -17,7 +17,7 @@ func (cs *FtpSession) GET(arg string) (string, error) {
 		arg = strings.TrimSpace(arg[len(ascii_flag):])
 	}
 	arg = strings.TrimSpace(arg)
-	parts := strings.Split(arg, "&")
+	parts := strings.Split(arg, Separator)
 	if len(parts) == 1 || parts[1] == "" {
 		return command_get(cs, parts[0], "/", useBinary)
 	}
