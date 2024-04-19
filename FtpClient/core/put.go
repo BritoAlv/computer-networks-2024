@@ -2,7 +2,6 @@ package core
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -30,11 +29,10 @@ func (cs *FtpSession) PUT(arg string) (string, error) {
 	}
 	arg = strings.TrimSpace(arg)
 	parts := strings.Split(arg, Separator)
-	fmt.Println(parts)
 	if len(parts) == 1 || parts[1] == "" {
 		return "", errors.New("where put the file ")
 	}
-	return command_store(cs, parts[0], parts[1], useUnique, useBinary, useAppend)
+	return command_store(cs, strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]), useUnique, useBinary, useAppend)
 }
 
 func command_store(cs *FtpSession, fileS string, fileD string, useUnique bool, useBinary bool, useAppend bool) (string, error) {
@@ -46,11 +44,13 @@ func command_store(cs *FtpSession, fileS string, fileD string, useUnique bool, u
 	if useBinary {
 		_, err := cs.TYPE("I")
 		if err != nil {
+			cs.release_connection()
 			return "", err
 		}
 	}
 	err = cs.check_connection()
 	if err != nil {
+		cs.release_connection()
 		return "", err
 	}
 	command := "STOR "
@@ -62,6 +62,7 @@ func command_store(cs *FtpSession, fileS string, fileD string, useUnique bool, u
 	}
 	_, err = writeAndreadOnMemory(cs, command+fileD)
 	if err != nil {
+		cs.release_connection()
 		return "", err
 	}
 	buffer := make([]byte, max_size)
@@ -69,12 +70,14 @@ func command_store(cs *FtpSession, fileS string, fileD string, useUnique bool, u
 		bytesRead, err := file.Read(buffer) // Read the file in chunks
 		if err != nil {
 			if err != io.EOF {
+				cs.release_connection()
 				return "", err
 			}
 			break
 		}
 		_, err = writeonMemoryPassive(cs.connectionData, buffer[:bytesRead])
 		if err != nil {
+			cs.release_connection()
 			return "", err
 		}
 	}
