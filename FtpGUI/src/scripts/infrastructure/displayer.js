@@ -104,7 +104,7 @@ export class Displayer {
         const filesToRemove = directory.files.filter(f => !response.files.includes(f.name)).map(f => f.id);
 
         filesToRemove.forEach(f => {
-            this.#localDirectoryTree.removeFile(f);
+            this.#serverDirectoryTree.removeFile(f);
         });
 
         this.#setServerDirectoryHtml();
