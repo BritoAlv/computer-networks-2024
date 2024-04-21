@@ -3,7 +3,7 @@ package core
 import "strings"
 
 func (cs *FtpSession) PORT(args string) (string, error) {
-	_, err := writeAndreadOnMemory(cs, "PORT "+strings.TrimSpace(args))
+	resp, err := writeAndreadOnMemory(cs, "PORT "+strings.TrimSpace(args))
 	if err != nil {
 		return "", err
 	}
@@ -15,5 +15,5 @@ func (cs *FtpSession) PORT(args string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return "", nil
+	return resp, nil
 }

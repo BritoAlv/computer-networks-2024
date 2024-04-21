@@ -30,7 +30,7 @@ func (cs *FtpSession) PUT(arg string) (string, error) {
 	arg = strings.TrimSpace(arg)
 	parts := strings.Split(arg, Separator)
 	if len(parts) == 1 || parts[1] == "" {
-		return "", errors.New("where put the file ")
+		return "", errors.New("syntax is: command <source> ~ <destination>")
 	}
 	return command_store(cs, strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]), useUnique, useBinary, useAppend)
 }

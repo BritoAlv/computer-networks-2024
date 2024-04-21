@@ -58,28 +58,32 @@ func writePart(commandCh chan string, X *core.FtpSession) {
 
 func StartConsole() {
 	var ip, port, user, password string
-
-	fmt.Print("IP: ")
-	fmt.Scanln(&ip)
-
-	fmt.Print("PORT: ")
-	fmt.Scanln(&port)
-
-	fmt.Print("USER: ")
-	fmt.Scanln(&user)
-
-	fmt.Print("PASSWORD: ")
-	fmt.Scanln(&password)
-	ftptouse := core.FTPExample{
-		Ip: ip,
-		Port: port,
-		User: user,
-		Password: password,
-	}
-
-	session, err := core.SessionBuilder(ftptouse)
-	if err != nil {
-		return
+	var session *core.FtpSession
+	for {
+		fmt.Print("IP: ")
+		fmt.Scanln(&ip)
+	
+		fmt.Print("PORT: ")
+		fmt.Scanln(&port)
+	
+		fmt.Print("USER: ")
+		fmt.Scanln(&user)
+	
+		fmt.Print("PASSWORD: ")
+		fmt.Scanln(&password)
+		ftptouse := core.FTPExample{
+			Ip: ip,
+			Port: port,
+			User: user,
+			Password: password,
+		}
+		session2, err := core.SessionBuilder(ftptouse)
+		if err != nil {
+			fmt.Println("Somethin was wrong " + err.Error())
+		} else {
+			session = session2
+			break
+		}
 	}
 	commandCh := make(chan string)
 
