@@ -28,7 +28,7 @@ func (cs *FtpSession) rGET(localpath string, path string) (string, error) {
 		}
 	}
 	for _, file := range files {
-		_, err = cs.GET(path + "/" + file + Separator + localpath + "/")
+		_, err = cs.GET(path + "/" + file + Separator + localpath)
 				if err != nil {
 					return "", err
 			}

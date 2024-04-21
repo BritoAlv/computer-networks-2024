@@ -2,6 +2,6 @@ POST http://localhost:5035/directories/download
 Content-Type: application/json
 
 {
-    "source" : "upload",
+    "source" : "/upload",
     "destination" : "/home/alvaro/proyectos"
 }

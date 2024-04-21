@@ -4,6 +4,7 @@ import "net/http"
 
 func Run_web_gui() {
 	http.HandleFunc("/connect", ConnectHandler)
+	http.HandleFunc("/close", CloseHandler)
 	http.HandleFunc("/list/server", ListServerHandler)
 	http.HandleFunc("/list/local", ListLocalHandler)
 	http.HandleFunc("/status", StatusHandler)
