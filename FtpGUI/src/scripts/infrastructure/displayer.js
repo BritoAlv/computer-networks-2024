@@ -244,6 +244,10 @@ export class Displayer {
     }
 
     async createDirectory(directoryName) {
+        if(directoryName == undefined || directoryName.trim() == '') {
+            this.#displayStatus("Error while creating server directory. Directory Name cannot be empty");
+            return;
+        }
         if (selected.serverDirectory == undefined) {
             this.#displayStatus("Error while creating server directory. Must select a directory in order to create one");
             return;
@@ -309,8 +313,13 @@ export class Displayer {
     }
 
     async renameFile(fileName) {
+        if(fileName == undefined || fileName.trim() == '') {
+            this.#displayStatus("Error while renaming server file. New File Name cannot be empty");
+            return;
+        }
         if (selected.serverFile == undefined) {
             this.#displayStatus("Error while renaming server file. Must select a file in order to rename it");
+            return;
         }
 
         const file = this.#serverDirectoryTree.findFile(selected.serverFile.substring(1));
