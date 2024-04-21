@@ -1,4 +1,4 @@
-import { displayer, selected } from "../globals.js"
+import { displayer } from "../globals.js"
 
 export async function localDirectoryComponent() {
     await displayer.displayLocalDirectory();
@@ -7,15 +7,15 @@ export async function localDirectoryComponent() {
     const uploadDirectoryButton = document.querySelector("#upload-directory-button");
     const refreshButton = document.querySelector("#local-refresh");
 
-    uploadFileButton.addEventListener("click", () => {
-        displayer.uploadFile();
+    uploadFileButton.addEventListener("click", async () => {
+        await displayer.uploadFile();
     });
 
-    uploadDirectoryButton.addEventListener("click", () => {
-        displayer.uploadDirectory();
+    uploadDirectoryButton.addEventListener("click", async () => {
+        await displayer.uploadDirectory();
     });
 
-    refreshButton.addEventListener("click", () => {
-        displayer.refreshLocal();
+    refreshButton.addEventListener("click", async () => {
+        await displayer.refreshLocal();
     });
 }

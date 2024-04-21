@@ -1,4 +1,4 @@
-import { displayer, selected } from "../globals.js"
+import { displayer } from "../globals.js"
 
 export function serverDirectoryComponent() {
     

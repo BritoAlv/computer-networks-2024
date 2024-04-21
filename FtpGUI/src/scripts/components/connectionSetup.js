@@ -10,13 +10,13 @@ export function connectionSetupComponent() {
 
     // Create connection event
     connectButton.addEventListener("click", async () => {
-        displayer.connect(ipAddress.value, port.value, userName.value, password.value);
+        await displayer.connect(ipAddress.value, port.value, userName.value, password.value);
         // cleanInputs();
     });
 
     // Close connection event
     closeButton.addEventListener("click", async () => {
-        displayer.close();
+        await displayer.close();
         // cleanInputs();
     });
 
