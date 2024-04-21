@@ -1,0 +1,7 @@
+POST http://localhost:5035/files/rename
+Content-Type: application/json
+
+{
+    "path" : "/upload/ProfessionalMARS Tutorial.doc",
+    "name" : "asasd.doc"
+}

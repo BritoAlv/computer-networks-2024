@@ -11,6 +11,7 @@ func Run_web_gui() {
 	http.HandleFunc("/files/upload", UploadFileHandler)
 	http.HandleFunc("/files/download", DownloadFileHandler)
 	http.HandleFunc("/files/remove", RemoveFileHandler)
+	http.HandleFunc("/files/rename", RenameFileHandler)
 	http.HandleFunc("/directories/create", CreateDirectoryHandler)
 	http.HandleFunc("/directories/remove", RemoveDirectoryHandler)
 	http.HandleFunc("/directories/download", DownloadDirectoryHandler)

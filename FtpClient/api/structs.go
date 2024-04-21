@@ -5,6 +5,11 @@ type FileTransferRequest struct {
 	Destination string  `json:"destination"`
 }
 
+type FileRename struct {
+	Path string `json:"path"`
+	Name string  `json:"name"`
+}
+
 type ConnectRequest struct {
 	IpAddress string `json:"ipAddress"`
 	UserName  string `json:"userName"`
