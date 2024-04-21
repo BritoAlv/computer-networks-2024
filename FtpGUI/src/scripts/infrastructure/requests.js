@@ -19,3 +19,10 @@ export class TransferRequest {
         this.Destination = destination;
     }
 };
+
+export class RenameRequest {
+    constructor(path, name) {
+        this.Path = path;
+        this.Name = name;
+    }
+}

@@ -1,7 +1,7 @@
 import { selected } from "../globals.js";
 import { DirectoryTree } from "./directory.js";
 import { Requester } from "./requester.js";
-import { ConnectRequest, PathRequest, TransferRequest } from "./requests.js";
+import { ConnectRequest, PathRequest, RenameRequest, TransferRequest } from "./requests.js";
 
 export class Displayer {
     #apiUrl;
@@ -304,6 +304,26 @@ export class Displayer {
 
         selected.serverFile = undefined;
         this.#serverDirectoryTree.removeFile(file.id);
+
+        this.#setServerDirectoryHtml();
+    }
+
+    async renameFile(fileName) {
+        if (selected.serverFile == undefined) {
+            this.#displayStatus("Error while renaming server file. Must select a file in order to rename it");
+        }
+
+        const file = this.#serverDirectoryTree.findFile(selected.serverFile.substring(1));
+
+        const request = new RenameRequest(file.path(), file.name);
+        const response = await this.#requester.post(this.#apiUrl + "files/rename", request);
+
+        this.#displayStatus(response.status);
+
+        if (!response.successful)
+            return;
+
+        file.name = fileName;
 
         this.#setServerDirectoryHtml();
     }

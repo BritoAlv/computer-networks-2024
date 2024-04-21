@@ -9,30 +9,37 @@ export function serverDirectoryComponent() {
     const createDirectoryInput = document.querySelector("#create-directory-input");
     const removeDirectoryButton = document.querySelector("#remove-directory-button");
     const removeFileButton = document.querySelector("#remove-file-button");
+    const renameFileButton = document.querySelector("#rename-file-button");
+    const renameFileInput = document.querySelector("#rename-file-input");
 
 
-    downloadFileButton.addEventListener("click", () => {
-        displayer.downloadFile();
+    downloadFileButton.addEventListener("click", async () => {
+        await displayer.downloadFile();
     });
 
-    downloadDirectoryButton.addEventListener("click", () => {
-        displayer.downloadDirectory();
+    downloadDirectoryButton.addEventListener("click", async () => {
+        await displayer.downloadDirectory();
     });
 
-    refreshButton.addEventListener("click", () => {
-        displayer.refreshServer();
+    refreshButton.addEventListener("click", async () => {
+        await displayer.refreshServer();
     });
 
-    createDirectoryButton.addEventListener("click", () => {
-        displayer.createDirectory(createDirectoryInput.value);
+    createDirectoryButton.addEventListener("click", async () => {
+        await displayer.createDirectory(createDirectoryInput.value);
         createDirectoryInput.value = "";
     });
 
-    removeDirectoryButton.addEventListener("click", () => {
-        displayer.removeDirectory();
+    removeDirectoryButton.addEventListener("click", async () => {
+        await displayer.removeDirectory();
     });
 
-    removeFileButton.addEventListener("click", () => {
-        displayer.removeFile();
+    removeFileButton.addEventListener("click", async () => {
+        await displayer.removeFile();
+    });
+
+    renameFileButton.addEventListener("click", async () => {
+        await displayer.renameFile(renameFileInput.value);
+        renameFileInput.value = "";
     });
 }

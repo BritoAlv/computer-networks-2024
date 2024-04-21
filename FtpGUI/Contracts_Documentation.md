@@ -198,6 +198,33 @@ Endpoint para listar un directorio del servidor
 }
 ```
 
+## POST url/files/rename
+
+### Request
+
+```json
+{
+  "path": "./Pictures/Nature/img.png",
+  "name": "forest.jpeg",
+}
+```
+
+### Response
+
+```json
+{
+  "status": "File successfully renamed",
+  "successful": true
+}
+```
+
+```json
+{
+  "status": "Error while renaming file",
+  "successful": false
+}
+```
+
 ## POST url/directories/upload
 
 ### Request
