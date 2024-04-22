@@ -227,7 +227,6 @@ export class Displayer {
         // Reset selected items
         selected.localFile = undefined;
         selected.localDirectory = undefined;
-
     }
 
     async refreshServer() {
@@ -244,7 +243,7 @@ export class Displayer {
     }
 
     async createDirectory(directoryName) {
-        if(directoryName == undefined || directoryName.trim() == '') {
+        if (directoryName == undefined || directoryName.trim() == '') {
             this.#displayStatus("Error while creating server directory. Directory Name cannot be empty");
             return;
         }
@@ -285,6 +284,7 @@ export class Displayer {
             return;
 
         selected.serverDirectory = undefined;
+        selected.serverFile = undefined;
         this.#serverDirectoryTree.removeDirectory(directory.id);
 
         this.#setServerDirectoryHtml();
@@ -313,7 +313,7 @@ export class Displayer {
     }
 
     async renameFile(fileName) {
-        if(fileName == undefined || fileName.trim() == '') {
+        if (fileName == undefined || fileName.trim() == '') {
             this.#displayStatus("Error while renaming server file. New File Name cannot be empty");
             return;
         }
@@ -374,7 +374,8 @@ export class Displayer {
                 // Remove select-file class from previously selected file
                 if (selected.localFile != undefined) {
                     const previouslySelected = document.querySelector(`#${selected.localFile}`);
-                    previouslySelected.className = `file-item`;
+                    if (previouslySelected != null)
+                        previouslySelected.className = `file-item`;
                 }
 
                 selected.localFile = item.id;
@@ -393,7 +394,8 @@ export class Displayer {
                 // Remove select-directory class from previously selected directory
                 if (selected.localDirectory != undefined) {
                     const previouslySelected = document.querySelector(`#${selected.localDirectory}`);
-                    previouslySelected.className = "directory-item";
+                    if (previouslySelected != null)
+                        previouslySelected.className = "directory-item";
                 }
 
                 selected.localDirectory = item.id;
