@@ -41,6 +41,6 @@ func RenameFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	core.SessionFinish(ftpSession)
 	StatusQueue.Enqueue(stat)
-	js, _ := json.Marshal(ResponseOperation{"File uploaded", true})
+	js, _ := json.Marshal(ResponseOperation{"File renamed", true})
 	responseWrite(&w, js)
 }

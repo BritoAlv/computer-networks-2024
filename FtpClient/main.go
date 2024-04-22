@@ -3,6 +3,7 @@ package main
 import (
 	"FTPClient/api"
 	"FTPClient/console"
+	"fmt"
 	"io"
 	"net"
 	"os"
@@ -20,6 +21,7 @@ func startPortConnection () {
 		}
 		go func(c net.Conn) {
 			io.Copy(os.Stdout, c)
+			fmt.Println("Sended from 10280")
 			c.Close()
 		}(conn)
 	}
