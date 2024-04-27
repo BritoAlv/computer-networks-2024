@@ -6,4 +6,5 @@ Para ejecutarlo asumiendo, instalado Go, Python3 :
 make run
 ``
 
-
+ToDo:
+    - implementar somehow una cola de responses del servidor para poder en el GUI tener un mejor STATUS, por ejemplo cuando se descarga un directorio saber cuantos archivos ya se han descargado, por ejemplo.
